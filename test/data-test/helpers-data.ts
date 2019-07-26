@@ -1,13 +1,10 @@
 const debug = require('debug')('seed');
-import TRIPS from './trip-data';
-import { TripDAO, ITrip } from '../../src/models/trip-model';
 import { UserDAO, IUser } from '../../src/models/user-model';
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 import { MODELS_DATA } from './common-data';
 import * as jwt from 'jsonwebtoken';
 import { CONSTANTS } from '../../src/persist/constants';
-// import { SecureService } from '../../src/services/secure-service';
 var mongoose = require('mongoose');
 
 chai.use(chaiHttp);
@@ -22,28 +19,6 @@ export class GeneralHelper {
     }
 
 }
-
-export class TripHelper {
-    trips: ITrip[] = [];
-
-    constructor(private tripDAO: TripDAO) {
-        this.trips = TRIPS;
-    }
-
-    public async addTrips(user) {
-        for (const trip of this.trips) {
-            trip.participants.push({ 
-                userId: user.id,
-                info: {email: user.email, username: user.username},
-                status: 'request_accepted', isAdmin: true });
-            await this.tripDAO.create(trip);
-        }   
-    }
-
-    public async deleteAllTrips() {
-        return this.tripDAO.deleteAll();   
-    }
-};
 
 export class UserHelper {
     private request = chai.request(app).keepOpen();

@@ -18,13 +18,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
-const trip_model_1 = require("../models/trip-model");
 const jwt = require("jsonwebtoken");
 const typedi_1 = require("typedi");
 const constants_1 = require("../persist/constants");
 let Authenticate = class Authenticate {
+    // private isAdmin: boolean;
     constructor(isAdmin) {
-        this.isAdmin = isAdmin;
+        // this.isAdmin = isAdmin;
     }
     use(request, response, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -51,14 +51,13 @@ let Authenticate = class Authenticate {
                     throw new routing_controllers_1.HttpError(401, 'This token is not related to any user');
                 }
                 ;
-                if (request.url.includes('/trips') && this.isAdmin) {
-                    const tripId = request.params.id;
-                    const isTripAdmin = yield this.isUserTripAdmin(user.id, tripId);
-                    if (!isTripAdmin) {
-                        throw new routing_controllers_1.HttpError(401, 'Only administrator can perform this task');
-                    }
-                    ;
-                }
+                //    if (request.url.includes('/trips') && this.isAdmin) {
+                //         const tripId: string = request.params.id;
+                //         const isTripAdmin = await this.isUserTripAdmin(user.id, tripId);
+                //         if (!isTripAdmin) {
+                //             throw new HttpError(401, 'Only administrator can perform this task');             
+                //         };
+                //     }
                 // console.log('//////////////////// 4 //////////////////////////////');
                 // console.log(accessToken);
                 request.user = user;
@@ -70,32 +69,7 @@ let Authenticate = class Authenticate {
             }
         });
     }
-    isUserTripAdmin(userId, tripId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const trip = yield this.tripDAO.get(tripId);
-                if (!trip) {
-                    return false;
-                }
-                const user = trip.participants.find(user => user.userId === userId);
-                if (!user) {
-                    return false;
-                }
-                if (user && user.isAdmin) {
-                    return true;
-                }
-                return false;
-            }
-            catch (err) {
-                throw new routing_controllers_1.HttpError(401, 'User not found during trip admin checking');
-            }
-        });
-    }
 };
-__decorate([
-    typedi_1.Inject(),
-    __metadata("design:type", trip_model_1.TripDAO)
-], Authenticate.prototype, "tripDAO", void 0);
 Authenticate = __decorate([
     typedi_1.Service(),
     __metadata("design:paramtypes", [Boolean])

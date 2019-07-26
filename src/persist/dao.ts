@@ -1,10 +1,7 @@
 import * as mongoose from 'mongoose';
-import { ITrip } from 'src/models/trip-model';
-import { IUser } from 'src/models/user-model';
 const debug = require('debug')('DAO');
-import * as jwt from 'jsonwebtoken';
 import * as _ from 'lodash';
-import { ObjectId, ObjectID } from 'bson';
+import { ObjectID } from 'bson';
 
 export interface DAO<T> {
     create(model: T):Promise<T>;
