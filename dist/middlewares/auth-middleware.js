@@ -11,15 +11,8 @@ const jwt = require("jsonwebtoken");
 const typedi_1 = require("typedi");
 const constants_1 = require("../persist/constants");
 let Authenticate = class Authenticate {
-    // @Inject() private tripDAO: TripDAO;
-    // private isAdmin: boolean;
-    // constructor(isAdmin: boolean) {
-    //     this.isAdmin = isAdmin;
-    // }  
     use(request, response, next) {
         let accessToken = request.header('Authorization');
-        // console.log('///////////////////// 1 ////////////////////////////');
-        // console.log(accessToken);
         try {
             if (!accessToken) {
                 throw new routing_controllers_1.HttpError(401, 'No authorization token provided');
@@ -29,26 +22,15 @@ let Authenticate = class Authenticate {
                 accessToken = accessToken.slice(7, accessToken.length);
             }
             const decoded = jwt.verify(accessToken, constants_1.CONSTANTS.ACCESS_TOKEN_SECRET, null);
-            // console.log('///////////////////// 2 //////////////////////////////');
             if (typeof decoded === 'undefined') {
                 throw new routing_controllers_1.HttpError(401, 'Authorizationt token cannot be decoded');
             }
             ;
             const user = decoded['payload'];
-            // console.log('//////////////////// 3 //////////////////////////////');
             if (!user) {
                 throw new routing_controllers_1.HttpError(401, 'This token is not related to any user');
             }
             ;
-            //    if (request.url.includes('/trips') && this.isAdmin) {
-            //         const tripId: string = request.params.id;
-            //         // const isTripAdmin = await this.isUserTripAdmin(user.id, tripId);
-            //         if (!isTripAdmin) {
-            //             throw new HttpError(401, 'Only administrator can perform this task');             
-            //         };
-            //     }
-            // console.log('//////////////////// 4 //////////////////////////////');
-            // console.log(accessToken);
             request.user = user;
             request.token = accessToken;
             next();
@@ -62,9 +44,4 @@ Authenticate = __decorate([
     typedi_1.Service()
 ], Authenticate);
 exports.Authenticate = Authenticate;
-// export class AdminOnly extends Authenticate implements ExpressMiddlewareInterface {
-//     constructor() {
-//         super(true);
-//     }
-// }
 //# sourceMappingURL=auth-middleware.js.map

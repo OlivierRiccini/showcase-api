@@ -63,12 +63,6 @@ let AWSSqsListenner = class AWSSqsListenner {
                 case 'SMS_QUEUE':
                     yield this.awsSnsManager.formatAndSendSMS(message);
                     break;
-                case 'facebook_messenger':
-                    // code block
-                    break;
-                case 'whatsApp':
-                    // code block
-                    break;
                 default:
                     throw new routing_controllers_1.BadRequestError('Message type provided not recognized');
             }

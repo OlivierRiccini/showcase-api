@@ -13,7 +13,7 @@ export class AWSSqsSender {
     this.sqs = new AWS.SQS({apiVersion: '2012-11-05'});
   }
 
-  public sendMessageToQueue(message: IMessage) {
+  public sendMessageToQueue(message: IMessage): void {
     const params = this.buildParams(message);
     this.sqs.sendMessage(params, function(err, data) {
       if (err) {
@@ -47,7 +47,7 @@ export class AWSSqsSender {
     };
   }
 
-  private buildMessageAttributes(message) {
+  private buildMessageAttributes(message: IMessage) {
     switch(message.type) {
       case 'email':
         return {
@@ -81,28 +81,6 @@ export class AWSSqsSender {
           'Phone': {
             DataType: 'String',
             StringValue: message.sms.phone
-          }
-        }
-      case 'facebook_messenger':
-        return {
-          'Type': {
-            DataType: 'String',
-            StringValue: message.type
-          },
-          'FacebookId': {
-            DataType: 'String',
-            StringValue: message.facebook_messenger.facebookId
-          }
-        }
-      case 'whatsApp':
-        return {
-          'Type': {
-            DataType: 'String',
-            StringValue: message.type
-          },
-          'FacebookId': {
-            DataType: 'String',
-            StringValue: message.facebook_messenger.facebookId
           }
         }
       default:

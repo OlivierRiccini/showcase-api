@@ -5,15 +5,11 @@ var app = require('../../dist/app').app;
 import 'mocha';
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
-// import chaiAsPromised from 'chai-as-promised'
 import * as chaiAsPromised from 'chai-as-promised';
-// chai.use(chaiAsPromised);
 import { IUser, UserDAO, IUserCredentials } from '../../src/models/user-model';
 import * as helpers from '../data-test/helpers-data';
 import { SecureService } from '../../src/services/secure-service';
 import { assert } from 'chai';
-import { CONSTANTS } from '../../src/persist/constants';
-import * as jwt from 'jsonwebtoken';
 
 const generalHelper: helpers.GeneralHelper = new helpers.GeneralHelper();
 
@@ -43,7 +39,6 @@ describe('HTTP - TESTING USER ROUTES ./http/user.test', function() {
   };
 
   const VALID_USER_CREDENTIALS_EMAIL: IUserCredentials = {
-    type: 'password',
     email: 'lebron.james@lakers.com',
     password: 'IamTheKing'  
   };

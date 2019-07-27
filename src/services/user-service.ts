@@ -30,7 +30,9 @@ export class UserService {
             if (!user) { throw new Error('Change password request rejected since user was not found during process') };
             await this.secureService.comparePassword(oldPassword, user.password);   
             await this.secureService.updatePassword(newPassword, userId);
-            if (process.env.NODE_ENV !== 'test') { await this.sendMessagesAfterRestePassword(user, newPassword) };
+            if (process.env.NODE_ENV !== 'test') { 
+                await this.sendMessagesAfterRestePassword(user, newPassword) 
+            };
         } catch (err) {
             throw new HttpError(400, err.message);
         }

@@ -141,15 +141,6 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
     await request.del('/auth/logout').set('authorization', VALID_USER_TOKEN);
   });
 
-  it('NEGATIVE - Should not login a user if no type was precised in credentials', async () => {
-    const response = await request
-      .post('/auth/login')
-      .send({phone: null, password: VALID_USER.password});
-    
-    expect(response.status).to.equal(400);
-    expect(response.body.message).to.equals('Credentials should have a property type equal either \'password\' or \'facebook\'');
-  });
-
   it('NEGATIVE - Should not register a user if email is already taken', async () => {
     let newUser: IUser = {
       username: 'New User',
@@ -489,15 +480,6 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
           }, Number(CONSTANTS.REFRESH_TOKEN_EXPIRES_IN) + 1000);
       }
     )
-  });
-
-  it.skip('Should signOut a user by removing secure', async () => {
-    const response = await request
-      .del('/auth/logout')
-      .set('authorization', VALID_USER_TOKEN);
-    
-    expect(response.status).to.equal(200);
-    expect(response.body).to.equal('Successfully logged out!');
   });
 
   it('POSITIVE - Should return true if email provided is already taken', async () => {

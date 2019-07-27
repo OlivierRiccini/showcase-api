@@ -4,7 +4,6 @@ process.env.NODE_ENV = 'test';
 import 'mocha';
 import * as chai from 'chai';
 import { MODELS, MODELS_DATA } from '../data-test/common-data';
-import { FindOptions } from '../../src/persist/dao';
 const forEach = require('mocha-each');
 
 const debug = require('debug')('test');
@@ -123,23 +122,6 @@ describe('COMMON - TESTING EACH MODEL DAO - ./common/dao.test', function() {
         nbOfDocuments = await modelDAO.count({});
         expect(nbOfDocuments).to.equals(0);
     });
-
-    // forEach(MODELS)
-    // .it('Should find and delete a document', async MODEL => {
-    //     const modelDAO = MODEL.DAO;
-
-    //     const instance = MODELS_DATA[MODEL.name][0];
-    //     let document = await modelDAO.create(instance);
-    //     let nbOfDocuments = await modelDAO.find({});
-
-    //     expect(nbOfDocuments).to.equals(1);
-    //     modelDAO.findAndRemove({find: {id: document.id}}).then(response => {
-    //         expect(response).to.have.property('message');
-    //         expect(response.message).to.equals('Deleted');
-    //     });
-    //     nbOfDocuments = await modelDAO.find({});
-    //     expect(nbOfDocuments).to.equals(0);
-    // });
 
     forEach(MODELS)
     .it('Should count number of documents', async MODEL => {

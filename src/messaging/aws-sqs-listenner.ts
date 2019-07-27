@@ -50,12 +50,6 @@ export class AWSSqsListenner {
       case 'SMS_QUEUE':
         await this.awsSnsManager.formatAndSendSMS(message);
         break;
-      case 'facebook_messenger':
-      // code block
-        break;
-      case 'whatsApp':
-        // code block
-        break;
       default:
         throw new BadRequestError('Message type provided not recognized');
     }

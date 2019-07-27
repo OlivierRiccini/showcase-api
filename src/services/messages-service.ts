@@ -1,7 +1,6 @@
 import { Service, Inject } from "typedi";
-// import { AmqSender } from "../messaging/send";
 import { AWSSqsSender } from "../messaging/aws-sqs-sender";
-import { IMessage, IEmail, ISMS, IFacebookMessengerMessage, IWhatsAppMessage } from "src/messaging/message-interfaces";
+import { IMessage, IEmail, ISMS } from "src/messaging/message-interfaces";
 import { BadRequestError } from "routing-controllers";
 
 @Service()
@@ -25,13 +24,5 @@ export class MessagesService {
         } catch {
             throw new BadRequestError('OOpss something went wrong while sending sms');
         }
-    }
-
-    public async sendFacebookMessengerMessage(message: IFacebookMessengerMessage) {
-        //
-    }
-
-    public async sendWhatsAppMessage(message: IWhatsAppMessage) {
-        //
     }
 }

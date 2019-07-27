@@ -17,16 +17,11 @@ export class AuthService {
     public async register(req: any): Promise<any> {         
         try {
             let user = req;
-            // const nonHashedPassword = user.password;
             user.password = await this.secureService.hashPassword(user.password);
             if (user.email) { await this.emailValidation(user.email) };
             if (user.phone) { await this.phoneValidation(user.phone) };
             user = await this.userDAO.create(req);
             const tokens = await this.secureService.generateAuthTokens(user);
-            // await this.messagesService.sendSMS({
-            //     phone: '+14383991332',
-            //     content: `Welcome: ${user.name.toUpperCase()}! We generated a new password for you: ${nonHashedPassword}`
-            // });
             return tokens;
         } catch (err) {
             throw new HttpError(400, err.message);

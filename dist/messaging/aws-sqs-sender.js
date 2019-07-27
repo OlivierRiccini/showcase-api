@@ -86,28 +86,6 @@ let AWSSqsSender = class AWSSqsSender {
                         StringValue: message.sms.phone
                     }
                 };
-            case 'facebook_messenger':
-                return {
-                    'Type': {
-                        DataType: 'String',
-                        StringValue: message.type
-                    },
-                    'FacebookId': {
-                        DataType: 'String',
-                        StringValue: message.facebook_messenger.facebookId
-                    }
-                };
-            case 'whatsApp':
-                return {
-                    'Type': {
-                        DataType: 'String',
-                        StringValue: message.type
-                    },
-                    'FacebookId': {
-                        DataType: 'String',
-                        StringValue: message.facebook_messenger.facebookId
-                    }
-                };
             default:
                 return;
         }

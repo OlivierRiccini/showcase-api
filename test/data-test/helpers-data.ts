@@ -1,6 +1,4 @@
 const debug = require('debug')('seed');
-import TRIPS from './trip-data';
-import { TripDAO, ITrip } from '../../src/models/trip-model';
 import { UserDAO, IUser } from '../../src/models/user-model';
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
@@ -16,34 +14,12 @@ var app = require('../../dist/app').app;
 export class GeneralHelper {
     constructor() {}
 
-    cleanDB() {
+    public cleanDB(): void {
         const db = mongoose.connection;
         db.dropDatabase();
     }
 
 }
-
-export class TripHelper {
-    trips: ITrip[] = [];
-
-    constructor(private tripDAO: TripDAO) {
-        this.trips = TRIPS;
-    }
-
-    public async addTrips(user) {
-        for (const trip of this.trips) {
-            trip.participants.push({ 
-                userId: user.id,
-                info: {email: user.email, username: user.username},
-                status: 'request_accepted', isAdmin: true });
-            await this.tripDAO.create(trip);
-        }   
-    }
-
-    public async deleteAllTrips() {
-        return this.tripDAO.deleteAll();   
-    }
-};
 
 export class UserHelper {
     private request = chai.request(app).keepOpen();
@@ -92,11 +68,4 @@ export class UserHelper {
         return user.id;
     }
 
-}
-
-export class SecureHelper {
-    // public secureService: SecureService;
-    // constructor() {
-    //     this.secureService = new SecureService()
-    // }
 }

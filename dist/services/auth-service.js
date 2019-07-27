@@ -30,7 +30,6 @@ let AuthService = class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 let user = req;
-                // const nonHashedPassword = user.password;
                 user.password = yield this.secureService.hashPassword(user.password);
                 if (user.email) {
                     yield this.emailValidation(user.email);
@@ -42,10 +41,6 @@ let AuthService = class AuthService {
                 ;
                 user = yield this.userDAO.create(req);
                 const tokens = yield this.secureService.generateAuthTokens(user);
-                // await this.messagesService.sendSMS({
-                //     phone: '+14383991332',
-                //     content: `Welcome: ${user.name.toUpperCase()}! We generated a new password for you: ${nonHashedPassword}`
-                // });
                 return tokens;
             }
             catch (err) {
