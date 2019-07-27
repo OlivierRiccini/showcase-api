@@ -3,7 +3,7 @@ import {JsonController, Param, Body, Get, Post, Put, Delete, Req, Res, UseBefore
 import { TripService } from "../services/trip-service";
 import { ITrip, TripDAO } from "../models/trip-model";
 import { Service, Inject } from "typedi";
-import { Authenticate, AdminOnly } from "../middlewares/auth-middleware";
+import { Authenticate } from "../middlewares/auth-middleware";
 import { UserDAO } from "../models/user-model";
 
 @JsonController('/trips')
@@ -47,7 +47,7 @@ export class TripController {
   }
 
   @Delete('/:id')
-  @UseBefore(AdminOnly)
+  // @UseBefore(AdminOnly)
   async deleteTrip(@Param('id') id: string) {
     debug('DELETE /trip by id');
     const response = await this.tripService.deleteTrip(id);

@@ -103,7 +103,6 @@ __decorate([
 ], TripController.prototype, "updateTrip", null);
 __decorate([
     routing_controllers_1.Delete('/:id'),
-    routing_controllers_1.UseBefore(auth_middleware_1.AdminOnly),
     __param(0, routing_controllers_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

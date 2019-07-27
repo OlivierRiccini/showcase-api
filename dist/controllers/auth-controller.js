@@ -40,12 +40,7 @@ let AuthController = class AuthController {
     login(credentials) {
         return __awaiter(this, void 0, void 0, function* () {
             let tokens;
-            if (credentials.type === 'facebook') {
-                tokens = yield this.authService.handleFacebookLogin(credentials);
-            }
-            else {
-                tokens = yield this.authService.login(credentials);
-            }
+            tokens = yield this.authService.login(credentials);
             debug('POST /auth/login => Successfully logged in!');
             return {
                 jwt: tokens.accessToken,

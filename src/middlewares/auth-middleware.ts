@@ -6,15 +6,15 @@ import { CONSTANTS } from '../persist/constants'
 
 @Service()
 export class Authenticate implements ExpressMiddlewareInterface {
-    @Inject() private tripDAO: TripDAO;
+    // @Inject() private tripDAO: TripDAO;
 
-    private isAdmin: boolean;
+    // private isAdmin: boolean;
 
-    constructor(isAdmin: boolean) {
-        this.isAdmin = isAdmin;
-    }  
+    // constructor(isAdmin: boolean) {
+    //     this.isAdmin = isAdmin;
+    // }  
     
-    async use(request: any, response: any, next: (err?: any) => Promise<any>) {
+    use(request: any, response: any, next: (err?: any) => Promise<any>) {
         let accessToken = request.header('Authorization');  
         // console.log('///////////////////// 1 ////////////////////////////');
         // console.log(accessToken);
@@ -38,13 +38,13 @@ export class Authenticate implements ExpressMiddlewareInterface {
                 throw new HttpError(401, 'This token is not related to any user');
            };
 
-           if (request.url.includes('/trips') && this.isAdmin) {
-                const tripId: string = request.params.id;
-                const isTripAdmin = await this.isUserTripAdmin(user.id, tripId);
-                if (!isTripAdmin) {
-                    throw new HttpError(401, 'Only administrator can perform this task');             
-                };
-            }
+        //    if (request.url.includes('/trips') && this.isAdmin) {
+        //         const tripId: string = request.params.id;
+        //         // const isTripAdmin = await this.isUserTripAdmin(user.id, tripId);
+        //         if (!isTripAdmin) {
+        //             throw new HttpError(401, 'Only administrator can perform this task');             
+        //         };
+        //     }
             // console.log('//////////////////// 4 //////////////////////////////');
             // console.log(accessToken);
             request.user = user;
@@ -56,29 +56,29 @@ export class Authenticate implements ExpressMiddlewareInterface {
 
     }
 
-    private async isUserTripAdmin(userId: string, tripId: string): Promise<boolean> {
-        try {
-            const trip: ITrip = await this.tripDAO.get(tripId);
-            if (!trip) {
-                return false;
-            }
-            const user = trip.participants.find(user => user.userId === userId);
-            if (!user) {
-                return false;
-            }
-            if (user && user.isAdmin) {
-                return true;
-            }
-            return false;
-        } catch (err) {
-            throw new HttpError(401, 'User not found during trip admin checking'); 
-        }
-    }
+    // private async isUserTripAdmin(userId: string, tripId: string): Promise<boolean> {
+    //     try {
+    //         const trip: ITrip = await this.tripDAO.get(tripId);
+    //         if (!trip) {
+    //             return false;
+    //         }
+    //         const user = trip.participants.find(user => user.userId === userId);
+    //         if (!user) {
+    //             return false;
+    //         }
+    //         if (user && user.isAdmin) {
+    //             return true;
+    //         }
+    //         return false;
+    //     } catch (err) {
+    //         throw new HttpError(401, 'User not found during trip admin checking'); 
+    //     }
+    // }
 
 }
 
-export class AdminOnly extends Authenticate implements ExpressMiddlewareInterface {
-    constructor() {
-        super(true);
-    }
-}
+// export class AdminOnly extends Authenticate implements ExpressMiddlewareInterface {
+//     constructor() {
+//         super(true);
+//     }
+// }

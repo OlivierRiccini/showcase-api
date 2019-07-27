@@ -1,10 +1,9 @@
 import { Service, Inject } from "typedi";
 import { UserDAO, IUserCredentials, IForgotPassword, IUser, IPhone } from '../models/user-model';
-import { HttpError, BadRequestError } from "routing-controllers";
+import { HttpError } from "routing-controllers";
 import { SecureService } from "./secure-service";
 import { MessagesService } from "./messages-service";
 import validator from 'validator';
-import { ContactMode } from "src/models/shared-interfaces";
 // const generator = require('generate-password');
 
 @Service()
@@ -36,7 +35,6 @@ export class AuthService {
 
     public async login(credentials: IUserCredentials): Promise<any> {
         try {
-            this.validateLoginType(credentials);
             this.validateCredentials(credentials);
             const query = this.buildQueryFromCredentials(credentials);
             let users = await this.userDAO.find(query);
@@ -44,9 +42,7 @@ export class AuthService {
                 throw new Error('User was not found while login');
             }
             let user = users[0];
-            if (credentials.type === 'password') {
-                await this.secureService.comparePassword(credentials.password, user.password);
-            }
+            await this.secureService.comparePassword(credentials.password, user.password);
             const tokens = await this.secureService.generateAuthTokens(user);  
             return tokens;
         } catch (err) {
@@ -75,26 +71,6 @@ export class AuthService {
         } catch (err) {
             throw new HttpError(400, err.message);
         }
-    }
-
-    public async handleFacebookLogin(credentials: IUserCredentials): Promise<string> {
-        const users = await this.userDAO.find({find:{email: credentials.email}});
-        const password = await this.secureService.generateNewPassword();
-        if (users && users.length < 1) {
-            const newUser = {
-                username: credentials.username,
-                email: credentials.email,
-                password,
-                facebookId: credentials.facebookId
-            };
-            return await this.register(newUser);
-        }
-        let user = users[0];
-        if (!user.facebookId) {
-            user.facebookId = credentials.facebookId;
-            await this.userDAO.update(user, user.id);
-        }
-        return await this.login(credentials);
     }
 
     public async logout(refreshToken: string): Promise<void> {
@@ -201,12 +177,6 @@ export class AuthService {
         }
         const formatedPhoneNumber: string = phone.internationalNumber.replace(/\s|\-|\(|\)/gm, '');
         return validator.isMobilePhone(formatedPhoneNumber, 'any', {strictMode: true});
-    }
-
-    private validateLoginType(credentials: IUserCredentials): void {
-        if (!credentials.hasOwnProperty('type') || credentials.type !== 'password' && credentials.type !== 'facebook') {
-            throw new Error('Credentials should have a property type equal either \'password\' or \'facebook\'');
-        }
     }
 
     private async sendMessagesAfterForgotPassword(contact: IForgotPassword, newPassword: string): Promise<void> {

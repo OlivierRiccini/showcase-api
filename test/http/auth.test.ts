@@ -37,13 +37,11 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
   };
 
   const VALID_USER_CREDENTIALS_EMAIL: IUserCredentials = {
-    type: 'password',
     email: 'lebron.james@lakers.com',
     password: 'IamTheKing'  
   };
 
   const VALID_USER_CREDENTIALS_PHONE: IUserCredentials = {
-    type: 'password',
     email: 'lebron.james@lakers.com',
     password: 'IamTheKing'
   };
@@ -233,10 +231,10 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
   });
 
   it('NEGATIVE - Should not login a user if neither email nor phone provided', async () => {
-    const credentials: IUserCredentials = {  type: 'password', phone: null, password: 'blaa' };
+    const credentials: IUserCredentials = { phone: null, password: 'blaa' };
     const response = await request
       .post('/auth/login')
-      .send({type: 'password', credentials, password: VALID_USER.password});
+      .send({ credentials, password: VALID_USER.password});
     
     expect(response.status).to.equal(400);
     expect(response.body.message).to.equals('User credentials should at least contain an email or a phone property');
@@ -245,7 +243,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
   it('NEGATIVE - Should not login a user if email provided is not valid', async () => {
     const response = await request
       .post('/auth/login')
-      .send({type: 'password', email: 'notvalidemail', password: VALID_USER.password});
+      .send({ email: 'notvalidemail', password: VALID_USER.password});
 
     expect(response.status).to.equal(400);
     expect(response.body.message).to.equals('Provided email is not valid');
@@ -260,7 +258,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
     };
     const response = await request
       .post('/auth/login')
-      .send({type: 'password', phone, password: VALID_USER.password});
+      .send({ phone, password: VALID_USER.password});
 
     expect(response.status).to.equal(400);
     expect(response.body.message).to.equals('Provided phone number is not valid');
@@ -274,7 +272,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
     };
     const response = await request
       .post('/auth/login')
-      .send({type: 'password', phone, password: VALID_USER.password});
+      .send({ phone, password: VALID_USER.password});
 
     expect(response.status).to.equal(400);
     expect(response.body.message).to.equals('Provided phone number is not valid');
@@ -284,7 +282,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
     const response = await request
       .post('/auth/login')
       .send({
-          type: 'password',
+          
           phone: {
             countryCode: "US",
             internationalNumber: "+1 343-343-3434",
@@ -307,7 +305,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
     };
     const response = await request
       .post('/auth/login')
-      .send({type: 'password', phone, password: VALID_USER.password});
+      .send({ phone, password: VALID_USER.password});
 
     expect(response.status).to.equal(400);
     expect(response.body.message).to.equals('User was not found while login');
@@ -316,7 +314,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
   it('NEGATIVE - Should not login if possword provided is wrong', async () => {
     const response = await request
       .post('/auth/login')
-      .send({type: 'password', email: VALID_USER.email, password: 'wrongpassword'});
+      .send({ email: VALID_USER.email, password: 'wrongpassword'});
     
     expect(response.status).to.equal(400);
     expect(response.body.message).to.equals('Wrong password');    

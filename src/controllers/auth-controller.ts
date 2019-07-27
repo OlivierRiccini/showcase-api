@@ -26,11 +26,7 @@ export class AuthController {
   @Post('/login')
   async login(@Body() credentials: IUserCredentials) {
     let tokens: any;
-    if (credentials.type === 'facebook') {
-      tokens = await this.authService.handleFacebookLogin(credentials);
-    } else {
-      tokens = await this.authService.login(credentials);
-    }
+    tokens = await this.authService.login(credentials);
     debug('POST /auth/login => Successfully logged in!');
     return {
       jwt: tokens.accessToken,

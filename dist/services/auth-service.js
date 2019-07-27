@@ -57,7 +57,6 @@ let AuthService = class AuthService {
     login(credentials) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                this.validateLoginType(credentials);
                 this.validateCredentials(credentials);
                 const query = this.buildQueryFromCredentials(credentials);
                 let users = yield this.userDAO.find(query);
@@ -65,9 +64,7 @@ let AuthService = class AuthService {
                     throw new Error('User was not found while login');
                 }
                 let user = users[0];
-                if (credentials.type === 'password') {
-                    yield this.secureService.comparePassword(credentials.password, user.password);
-                }
+                yield this.secureService.comparePassword(credentials.password, user.password);
                 const tokens = yield this.secureService.generateAuthTokens(user);
                 return tokens;
             }
@@ -102,27 +99,6 @@ let AuthService = class AuthService {
             catch (err) {
                 throw new routing_controllers_1.HttpError(400, err.message);
             }
-        });
-    }
-    handleFacebookLogin(credentials) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const users = yield this.userDAO.find({ find: { email: credentials.email } });
-            const password = yield this.secureService.generateNewPassword();
-            if (users && users.length < 1) {
-                const newUser = {
-                    username: credentials.username,
-                    email: credentials.email,
-                    password,
-                    facebookId: credentials.facebookId
-                };
-                return yield this.register(newUser);
-            }
-            let user = users[0];
-            if (!user.facebookId) {
-                user.facebookId = credentials.facebookId;
-                yield this.userDAO.update(user, user.id);
-            }
-            return yield this.login(credentials);
         });
     }
     logout(refreshToken) {
@@ -231,11 +207,6 @@ let AuthService = class AuthService {
         }
         const formatedPhoneNumber = phone.internationalNumber.replace(/\s|\-|\(|\)/gm, '');
         return validator_1.default.isMobilePhone(formatedPhoneNumber, 'any', { strictMode: true });
-    }
-    validateLoginType(credentials) {
-        if (!credentials.hasOwnProperty('type') || credentials.type !== 'password' && credentials.type !== 'facebook') {
-            throw new Error('Credentials should have a property type equal either \'password\' or \'facebook\'');
-        }
     }
     sendMessagesAfterForgotPassword(contact, newPassword) {
         return __awaiter(this, void 0, void 0, function* () {

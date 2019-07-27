@@ -7,10 +7,6 @@ const debug = require('debug')('DAO');
 
 delete mongoose.connection.models['User'];
 
-export type LoginType =
-| 'password'
-| 'facebook' 
-
 export interface IPhone {
     countryCode: string,
     internationalNumber: string,
@@ -25,17 +21,14 @@ export interface IUser {
     username?: string,
     email?: string,
     phone?: IPhone,
-    password: string,
-    facebookId?: string
+    password: string
 }
 
 export interface IUserCredentials {
-    type: LoginType,
     username?: string,
     email?: string,
     phone?: IPhone,
-    password?: string,
-    facebookId?: string
+    password?: string
 }
 
 export interface IForgotPassword {
@@ -80,8 +73,7 @@ export class UserDAO extends DAOImpl<IUser, UserDocument> {
                 type: String,
                 require: true,
                 minlength: 6
-            },
-            facebookId: String
+            }
         });
        
         super('User', UserSchema);
