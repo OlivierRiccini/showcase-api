@@ -26,7 +26,7 @@ let MessagesService = class MessagesService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const messageForQueue = { type: 'email', email };
-                this.awsSqsSender.sendMessageToQueue(messageForQueue);
+                yield this.awsSqsSender.sendMessageToQueue(messageForQueue);
             }
             catch (_a) {
                 throw new routing_controllers_1.BadRequestError('OOpss something went wrong while sending email');

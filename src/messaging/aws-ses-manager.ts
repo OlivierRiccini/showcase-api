@@ -13,17 +13,11 @@ export class AwsSESManager {
     this.init(apiVersion, region);
   }
 
-  public async formatAndSendEmail(message: string) {
+  public async formatAndSendEmail(message: string): Promise<void> {
     const params = await this.createSendEmailParams(message);
     console.log('Sending email....');
-    this.sendPromise.sendEmail(params).promise()
-      .then(
-        function(data) {
-          console.log('Done! email sent => ' + data.MessageId);
-        }).catch(
-          function(err) {
-          console.error(err, err.stack);
-      });
+    await this.sendPromise.sendEmail(params).promise();
+    console.log('Email sent!');
   }
 
   private init(apiVersion: string, region: string) {
@@ -48,8 +42,7 @@ export class AwsSESManager {
         Body: { /* required */
           Html: {
           Charset: "UTF-8",
-          Data: `<p>${msg.Body}</p><br>
-            <a href="http://localhost:4200/trips/new/overview">Create a trip</a>`
+          Data: `<p>${msg.Body}</p><br>`
           },
           Text: {
           Charset: "UTF-8",

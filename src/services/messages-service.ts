@@ -11,7 +11,7 @@ export class MessagesService {
     public async sendEmail(email: IEmail): Promise<void> {
         try {
             const messageForQueue: IMessage = { type: 'email', email };
-            this.awsSqsSender.sendMessageToQueue(messageForQueue);
+            await this.awsSqsSender.sendMessageToQueue(messageForQueue);
         } catch {
             throw new BadRequestError('OOpss something went wrong while sending email');
         }

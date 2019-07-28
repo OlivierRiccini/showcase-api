@@ -24,6 +24,7 @@ const constants_1 = require("../persist/constants");
 const routing_controllers_1 = require("routing-controllers");
 // import { AWSSqsReceiver } from "./aws-sqs-receiver";
 const { Consumer } = require('sqs-consumer');
+// const events = require('events');
 let AWSSqsListenner = class AWSSqsListenner {
     constructor() {
         this.awsSesManager = new aws_ses_manager_1.AwsSESManager();

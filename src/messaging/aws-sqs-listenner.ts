@@ -5,6 +5,7 @@ import { CONSTANTS } from "../persist/constants";
 import { BadRequestError } from "routing-controllers";
 // import { AWSSqsReceiver } from "./aws-sqs-receiver";
 const { Consumer } = require('sqs-consumer');
+// const events = require('events');
 
 @Service()
 export class AWSSqsListenner {

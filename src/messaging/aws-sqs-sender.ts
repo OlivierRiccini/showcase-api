@@ -13,12 +13,14 @@ export class AWSSqsSender {
     this.sqs = new AWS.SQS({apiVersion: '2012-11-05'});
   }
 
-  public sendMessageToQueue(message: IMessage): void {
+  public sendMessageToQueue(message: IMessage): Promise<void> {
     const params = this.buildParams(message);
-    this.sqs.sendMessage(params, function(err, data) {
+    return this.sqs.sendMessage(params, (err, data) => {
       if (err) {
+        Promise.reject();
         console.log("Error", err);
       } else {
+        Promise.resolve();
         console.log("Success", data.MessageId);
       }
     });
@@ -57,7 +59,7 @@ export class AWSSqsSender {
           },
           'From': {
             DataType: 'String',
-            StringValue: 'info@olivierriccini.com' // TODO: Change
+            StringValue: message.email.from // TODO: Change
           },
           'To': {
             DataType: 'String',

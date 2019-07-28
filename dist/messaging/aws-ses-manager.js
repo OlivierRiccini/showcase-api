@@ -29,12 +29,8 @@ let AwsSESManager = class AwsSESManager {
         return __awaiter(this, void 0, void 0, function* () {
             const params = yield this.createSendEmailParams(message);
             console.log('Sending email....');
-            this.sendPromise.sendEmail(params).promise()
-                .then(function (data) {
-                console.log('Done! email sent => ' + data.MessageId);
-            }).catch(function (err) {
-                console.error(err, err.stack);
-            });
+            yield this.sendPromise.sendEmail(params).promise();
+            console.log('Email sent!');
         });
     }
     init(apiVersion, region) {
@@ -58,8 +54,7 @@ let AwsSESManager = class AwsSESManager {
                     Body: {
                         Html: {
                             Charset: "UTF-8",
-                            Data: `<p>${msg.Body}</p><br>
-            <a href="http://localhost:4200/trips/new/overview">Create a trip</a>`
+                            Data: `<p>${msg.Body}</p><br>`
                         },
                         Text: {
                             Charset: "UTF-8",

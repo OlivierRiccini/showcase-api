@@ -31,6 +31,7 @@ let MessageController = class MessageController {
             try {
                 yield this.messagesService.sendEmail(email);
                 debug('POST /message/email => Email successfully sent!');
+                return 'Email successfully sent!';
             }
             catch (err) {
                 debug(err.message);
@@ -42,6 +43,7 @@ let MessageController = class MessageController {
             try {
                 yield this.messagesService.sendSMS(sms);
                 debug('POST /message/sms => Sms successfully sent!');
+                return 'Sms successfully sent!';
             }
             catch (err) {
                 debug(err.message);

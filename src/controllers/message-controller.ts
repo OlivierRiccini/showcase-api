@@ -12,20 +12,22 @@ export class MessageController {
   constructor() { }
 
   @Post('/email')
-  async sendEmail(@Body() email: IEmail): Promise<void> {
+  async sendEmail(@Body() email: IEmail): Promise<string> {
     try {
         await this.messagesService.sendEmail(email);
         debug('POST /message/email => Email successfully sent!');
+        return 'Email successfully sent!';
     } catch(err) {
         debug(err.message)
     }
   }
 
   @Post('/sms')
-  async sendsms(@Body() sms: ISMS): Promise<void> {
+  async sendsms(@Body() sms: ISMS): Promise<string> {
     try {
         await this.messagesService.sendSMS(sms);
         debug('POST /message/sms => Sms successfully sent!');
+        return 'Sms successfully sent!';
     } catch(err) {
         debug(err.message)
     }
