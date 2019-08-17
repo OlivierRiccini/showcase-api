@@ -18,6 +18,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typedi_1 = require("typedi");
+const routing_controllers_1 = require("routing-controllers");
 var AWS = require('aws-sdk');
 let AwsSESManager = class AwsSESManager {
     constructor() {
@@ -27,10 +28,16 @@ let AwsSESManager = class AwsSESManager {
     }
     formatAndSendEmail(message) {
         return __awaiter(this, void 0, void 0, function* () {
-            const params = yield this.createSendEmailParams(message);
-            console.log('Sending email....');
-            yield this.sendPromise.sendEmail(params).promise();
-            console.log('Email sent!');
+            let params;
+            try {
+                params = yield this.createSendEmailParams(message);
+                console.log('Sending email....');
+                yield this.sendPromise.sendEmail(params).promise();
+                console.log('Email sent!');
+            }
+            catch (err) {
+                throw new routing_controllers_1.BadRequestError(err);
+            }
         });
     }
     init(apiVersion, region) {

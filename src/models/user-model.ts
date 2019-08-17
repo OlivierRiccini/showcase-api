@@ -21,7 +21,8 @@ export interface IUser {
     username?: string,
     email?: string,
     phone?: IPhone,
-    password: string
+    password: string,
+    organizationId: string
 }
 
 export interface IUserCredentials {
@@ -41,7 +42,8 @@ export interface IPayload {
     id: string,
     username: string,
     email?: string,
-    phone?: IPhone
+    phone?: IPhone,
+    organizationId: string
 }
 
 // Document
@@ -68,6 +70,10 @@ export class UserDAO extends DAOImpl<IUser, UserDocument> {
                 internationalNumber: String,
                 nationalNumber: String,
                 number: String
+            },
+            organizationId: {
+                type: String,
+                require: true
             },
             password: {
                 type: String,

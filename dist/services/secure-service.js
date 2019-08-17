@@ -23,7 +23,6 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const constants_1 = require("../persist/constants");
 const routing_controllers_1 = require("routing-controllers");
-const secure_model_1 = require("../models/secure-model");
 const auth_service_1 = require("./auth-service");
 const generator = require('generate-password');
 ;
@@ -85,7 +84,8 @@ let SecureService = class SecureService {
                 id: user.id,
                 username: user.username,
                 email: user.email || null,
-                phone: user.phone || null
+                phone: user.phone || null,
+                organizationId: user.organizationId || null
             };
             const accessToken = yield jwt.sign({ payload }, constants_1.CONSTANTS.ACCESS_TOKEN_SECRET, { expiresIn: constants_1.CONSTANTS.ACCESS_TOKEN_EXPIRES_IN }).toString();
             return accessToken;
@@ -97,22 +97,7 @@ let SecureService = class SecureService {
                 const payload = { userId: user.id };
                 const refreshSecret = constants_1.CONSTANTS.REFRESH_TOKEN_SECRET + user.password;
                 const refreshToken = yield jwt.sign({ payload }, refreshSecret, { expiresIn: constants_1.CONSTANTS.REFRESH_TOKEN_EXPIRES_IN }).toString();
-                yield this.secureDAO.create({ refreshToken });
                 return refreshToken;
-            }
-            catch (err) {
-                throw new routing_controllers_1.HttpError(404, err.message);
-            }
-        });
-    }
-    removeRefreshToken(refreshToken) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const secures = yield this.secureDAO.find({ find: { refreshToken } });
-                if (secures && secures.length < 1) {
-                    throw new routing_controllers_1.HttpError(401, 'Refresh token not found when trying to delete it');
-                }
-                yield this.secureDAO.delete(secures[0].id);
             }
             catch (err) {
                 throw new routing_controllers_1.HttpError(404, err.message);
@@ -206,10 +191,6 @@ __decorate([
     typedi_1.Inject(),
     __metadata("design:type", user_model_1.UserDAO)
 ], SecureService.prototype, "userDAO", void 0);
-__decorate([
-    typedi_1.Inject(),
-    __metadata("design:type", secure_model_1.SecureDAO)
-], SecureService.prototype, "secureDAO", void 0);
 SecureService = __decorate([
     typedi_1.Service(),
     __metadata("design:paramtypes", [])

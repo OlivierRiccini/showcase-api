@@ -62,13 +62,6 @@ export class AuthController {
     };
   }
 
-  @Post('/logout')
-  async logout(@HeaderParam('refreshToken') refreshToken: string) {
-    await this.authService.logout(refreshToken);
-    debug('POST /auth/logout => Successfully logged out!');
-    return 'Successfully logged out!';
-  }
-
   @Post('/forgot-password')
   async forgotPassord(@Body() contact: IForgotPassword) {
     await this.authService.forgotPassword(contact);

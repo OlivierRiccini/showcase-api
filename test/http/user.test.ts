@@ -10,12 +10,16 @@ import { IUser, UserDAO, IUserCredentials } from '../../src/models/user-model';
 import * as helpers from '../data-test/helpers-data';
 import { SecureService } from '../../src/services/secure-service';
 import { assert } from 'chai';
+import { OrganizationDAO } from '../../src/models/organization-model';
 
 const generalHelper: helpers.GeneralHelper = new helpers.GeneralHelper();
 
 const userDAO: UserDAO = new UserDAO();
 const userHelper: helpers.UserHelper = new helpers.UserHelper(userDAO);
 const secureService: SecureService = new SecureService();
+
+const organizationDAO: OrganizationDAO = new OrganizationDAO();
+const organizationHelper: helpers.organizationHelper = new helpers.organizationHelper(organizationDAO);
 
 const expect = chai.expect;
 chai.use(chaiHttp);
@@ -36,6 +40,7 @@ describe('HTTP - TESTING USER ROUTES ./http/user.test', function() {
       nationalNumber: "(438) 399-1332",
       number: "+14383991332"
     },
+    organizationId: '333333333333333333333333'
   };
 
   const VALID_USER_CREDENTIALS_EMAIL: IUserCredentials = {
@@ -47,12 +52,13 @@ describe('HTTP - TESTING USER ROUTES ./http/user.test', function() {
 
   before('Create user', async () => {
     generalHelper.cleanDB();
+    await organizationHelper.create()
     const response = await request
       .post('/auth/register')
       .send(VALID_USER);
     let token = response.body['jwt'];
     VALID_USER.id = userHelper.getIdByToken(token);
-    VALID_USER_TOKEN = token; 
+    VALID_USER_TOKEN = token;
   });
 
   after('Cleaning DB', async () => {
@@ -69,7 +75,8 @@ describe('HTTP - TESTING USER ROUTES ./http/user.test', function() {
         internationalNumber: "+33 6 74 99 00 99",
         nationalNumber: "06 74 99 00 99",
         number: "0674990099"
-      }
+      },
+      organizationId: '333333333333333333333333'
     };
 
     const response = await request
@@ -90,8 +97,29 @@ describe('HTTP - TESTING USER ROUTES ./http/user.test', function() {
     expect(response2.status).to.equal(200);
     expect(response2.body.username).to.equal('Zizou');
     expect(response2.body.email).to.equal('zizou@zz.fr');
+    expect(response2.body.organizationId).to.equal('333333333333333333333333');
 
     await userHelper.delete(userId);
+  });
+
+  it('NEGATIVE - Should not register user if organizationId is not provided', async () => {
+    const user: any = {
+      username: 'Test USer',
+      email: 'test@user.fr',
+      password: 'test',
+      phone: {
+        countryCode: "FR",
+        internationalNumber: "+33 6 77 99 99 99",
+        nationalNumber: "06 77 99 99 99",
+        number: "0677999999"
+      }
+    };
+
+    const response = await request
+      .post('/auth/register')
+      .send(user);
+    expect(response.status).to.equal(400);
+    expect(response.body.message).to.equals('Cannot register user with no organizationId');
   });
 
   it('NEGATIVE - Should not update user email address if not valid', async () => {
@@ -116,7 +144,8 @@ describe('HTTP - TESTING USER ROUTES ./http/user.test', function() {
         internationalNumber: "+33 6 77 99 99 99",
         nationalNumber: "06 77 99 99 99",
         number: "0677999999"
-      }
+      },
+      organizationId: '333333333333333333333333'
     };
 
     const response = await request
@@ -167,7 +196,8 @@ describe('HTTP - TESTING USER ROUTES ./http/user.test', function() {
         internationalNumber: "+33 6 77 11 11 11",
         nationalNumber: "06 77 11 11 11",
         number: "0677111111"
-      }
+      },
+      organizationId: '333333333333333333333333'
     };
 
     const response = await request
@@ -258,9 +288,6 @@ describe('HTTP - TESTING USER ROUTES ./http/user.test', function() {
     // Password shoudl be the same since it's not been successfully updated
     await expect(secureService.comparePassword(newPassword, userFromDB.password)).to.be.fulfilled;
 
-    // logging out user
-    await request.post('/auth/logout').set('authorization', VALID_USER_TOKEN);
-
     VALID_USER_CREDENTIALS_EMAIL.password = newPassword;
 
     const response2 = await request
@@ -283,10 +310,7 @@ describe('HTTP - TESTING USER ROUTES ./http/user.test', function() {
       .get('/trips')
       .set('Authorization', VALID_USER_TOKEN);
 
-    expect(response3.status).to.equal(200);
-
-    await request.post('/auth/logout').set('authorization', VALID_USER_TOKEN);
-  
+    expect(response3.status).to.equal(200);  
   });
 
 });

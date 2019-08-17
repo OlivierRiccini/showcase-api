@@ -45,7 +45,7 @@ class DAOImpl {
             this.model.findOne({ _id: new bson_1.ObjectID(id) })
                 .lean()
                 .exec((err, document) => {
-                if (err) {
+                if (err || !document) {
                     debug('get - FAILED => document with id => ${id} not found');
                     reject(new Error(`Document with id => ${id} not found`));
                 }

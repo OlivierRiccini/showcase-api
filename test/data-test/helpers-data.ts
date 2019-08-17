@@ -5,6 +5,7 @@ import chaiHttp = require('chai-http');
 import { MODELS_DATA } from './common-data';
 import * as jwt from 'jsonwebtoken';
 import { CONSTANTS } from '../../src/persist/constants';
+import { OrganizationDAO, IOrganization } from '../../src/models/organization-model';
 // import { SecureService } from '../../src/services/secure-service';
 var mongoose = require('mongoose');
 
@@ -19,6 +20,14 @@ export class GeneralHelper {
         db.dropDatabase();
     }
 
+}
+
+export class organizationHelper {
+    constructor(private organizationDAO: OrganizationDAO) {}
+
+    public async create(): Promise<IOrganization> {
+        return this.organizationDAO.create(MODELS_DATA.Organization[0]);
+    }
 }
 
 export class UserHelper {

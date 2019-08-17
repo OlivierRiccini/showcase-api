@@ -53,13 +53,12 @@ describe('COMMON - TESTING EACH MODEL DAO - ./common/dao.test', function() {
     forEach(MODELS)
     .it('Should getAll documents', async MODEL => {
         const modelDAO = MODEL.DAO;
-
         for (const modelData of MODELS_DATA[MODEL.name]) {
             await modelDAO.create(modelData);
         }
-
+        
         return modelDAO.getAll().then(response => {
-            expect(response).to.have.lengthOf(2);
+            expect(response).to.have.lengthOf(MODELS_DATA[MODEL.name].length);
         });
     });
 
@@ -72,7 +71,7 @@ describe('COMMON - TESTING EACH MODEL DAO - ./common/dao.test', function() {
         }
 
         return modelDAO.find({find: {}}).then(response => {
-            expect(response).to.have.lengthOf(2);
+            expect(response).to.have.lengthOf(MODELS_DATA[MODEL.name].length);
         });
     });
 
@@ -115,7 +114,7 @@ describe('COMMON - TESTING EACH MODEL DAO - ./common/dao.test', function() {
         }
 
         let nbOfDocuments = await modelDAO.count({});
-        expect(nbOfDocuments).to.equals(2);
+        expect(nbOfDocuments).to.equals(MODELS_DATA[MODEL.name].length);
 
         await modelDAO.deleteAll();
 
@@ -132,7 +131,7 @@ describe('COMMON - TESTING EACH MODEL DAO - ./common/dao.test', function() {
         }
 
         const nbOfDocuments = await modelDAO.count({});
-        expect(nbOfDocuments).to.equals(2);
+        expect(nbOfDocuments).to.equals(MODELS_DATA[MODEL.name].length);
     });
 
 });

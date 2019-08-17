@@ -48,24 +48,31 @@ let AWSSqsListenner = class AWSSqsListenner {
             })
         });
         app.on('error', (err) => {
+            console.log('zeubi 1');
             console.error(err.message);
         });
         app.on('processing_error', (err) => {
+            console.log('zeubi 2');
             console.error(err.message);
         });
         app.start();
     }
     formatAndSendMessage(queue, message) {
         return __awaiter(this, void 0, void 0, function* () {
-            switch (queue) {
-                case 'EMAIL_QUEUE':
-                    yield this.awsSesManager.formatAndSendEmail(message);
-                    break;
-                case 'SMS_QUEUE':
-                    yield this.awsSnsManager.formatAndSendSMS(message);
-                    break;
-                default:
-                    throw new routing_controllers_1.BadRequestError('Message type provided not recognized');
+            try {
+                switch (queue) {
+                    case 'EMAIL_QUEUE':
+                        yield this.awsSesManager.formatAndSendEmail(message);
+                        break;
+                    case 'SMS_QUEUE':
+                        yield this.awsSnsManager.formatAndSendSMS(message);
+                        break;
+                    default:
+                        throw new routing_controllers_1.BadRequestError('Message type provided not recognized');
+                }
+            }
+            catch (err) {
+                throw new routing_controllers_1.BadRequestError(err);
             }
         });
     }

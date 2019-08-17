@@ -9,11 +9,15 @@ import { IUser, IUserCredentials, UserDAO, IPhone } from '../../src/models/user-
 import { CONSTANTS } from '../../src/persist/constants';
 import * as jwt from 'jsonwebtoken';
 import * as helpers from '../data-test/helpers-data';
+import { OrganizationDAO } from '../../src/models/organization-model';
 
 const generalHelper: helpers.GeneralHelper = new helpers.GeneralHelper();
 
 const userDAO: UserDAO = new UserDAO();
 const userHelper: helpers.UserHelper = new helpers.UserHelper(userDAO);
+
+const organizationDAO: OrganizationDAO = new OrganizationDAO();
+const organizationHelper: helpers.organizationHelper = new helpers.organizationHelper(organizationDAO);
 
 const expect = chai.expect;
 chai.use(chaiHttp);
@@ -34,6 +38,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
       nationalNumber: "(438) 399-1332",
       number: "+14383991332"
     },
+    organizationId: '333333333333333333333333'
   };
 
   const VALID_USER_CREDENTIALS_EMAIL: IUserCredentials = {
@@ -50,9 +55,10 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
 
   before('Create user', async () => {
     generalHelper.cleanDB();
+    await organizationHelper.create();
     const response = await request
-      .post('/auth/register')
-      .send(VALID_USER);
+    .post('/auth/register')
+    .send(VALID_USER);
     let token = response.body['jwt'];
     VALID_USER.id = userHelper.getIdByToken(token);
     VALID_USER_TOKEN = token; 
@@ -67,6 +73,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
       username: 'Steph',
       email: 'steph.curry@warrriors.com',
       password: 'shoot',
+      organizationId: '333333333333333333333333'
     };
 
     const response = await request
@@ -88,8 +95,6 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
     expect(user).to.have.property('id');
     expect(user).to.have.property('username');
     expect(user).to.have.property('email');
-
-    await request.post('/auth/logout').set('authorization', token);
   });
 
   it('POSITIVE - Should login a user using password and email, and get a token back', async () => {
@@ -110,8 +115,6 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
     expect(user).to.have.property('id');
     expect(user).to.have.property('username');
     expect(user).to.have.property('email');
-
-    await request.post('/auth/logout').set('authorization', VALID_USER_TOKEN);
   });
 
   it('POSITIVE - Should login a user using password and phone, and get a token', async () => {
@@ -137,8 +140,6 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
       expect(user.phone).to.have.property('internationalNumber');
       expect(user.phone).to.have.property('nationalNumber');
       expect(user.phone).to.have.property('number');
-
-    await request.del('/auth/logout').set('authorization', VALID_USER_TOKEN);
   });
 
   it('NEGATIVE - Should not register a user if email is already taken', async () => {
@@ -152,6 +153,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
         nationalNumber: "(666) 666-8809",
         number: "+16666668809"
       },
+      organizationId: '333333333333333333333333'
     };
 
     const response = await request
@@ -171,7 +173,8 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
         internationalNumber: "+1 438-399-1332",
         nationalNumber: "(438) 399-1332",
         number: "+14383991332"
-      }
+      },
+      organizationId: '333333333333333333333333'
     };
 
     const response = await request
@@ -191,7 +194,8 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
         internationalNumber: "+1 234-000-5654",
         nationalNumber: "(234) 000-5654",
         number: "+123400054" // one digit missed 
-      }
+      },
+      organizationId: '333333333333333333333333'
     };
 
     const response = await request
@@ -211,7 +215,8 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
         internationalNumber: "+1 898-898-8989",
         nationalNumber: "(898) 898-8989",
         number: "+18989898989"
-      }
+      },
+      organizationId: '333333333333333333333333'
     };
 
     const response = await request
@@ -245,7 +250,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
       number: '4383991332', 
       internationalNumber: '4383991332', // +1 missing 
       nationalNumber: '4383991332', 
-      countryCode: 'US' 
+      countryCode: 'US'
     };
     const response = await request
       .post('/auth/login')
@@ -273,7 +278,6 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
     const response = await request
       .post('/auth/login')
       .send({
-          
           phone: {
             countryCode: "US",
             internationalNumber: "+1 343-343-3434",
@@ -335,9 +339,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
             } catch (err) {
               expect(err).to.have.property('name').to.equal('TokenExpiredError');
             }
-            request.post('/auth/logout').set('refresh-token', refreshToken).then(() => {
-              done(); 
-            });
+            done();
           }, Number(CONSTANTS.ACCESS_TOKEN_EXPIRES_IN) + 1000); 
         }
       )
@@ -363,9 +365,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
           } catch (err) {
             expect(err).to.have.property('name').to.equal('TokenExpiredError');
           }
-          request.post('/auth/logout').set('refresh-token', refreshToken).then(() => {
-            done(); 
-          }); 
+          done();
         }, testDuration); 
       }
     )
@@ -397,9 +397,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
                 expect(refreshRespo.body).to.have.property('refresh-token');
                 expect(newJwtToken).to.not.equals(oldJwtToken);
                 expect(newRefreshToken).to.not.equals(oldRefreshToken);
-                request.post('/auth/logout').set('refresh-token', newRefreshToken).then(() => {
-                  done();
-                })
+                done();
               } catch (err) {
                 done(err);
               }
@@ -435,9 +433,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
                 expect(refreshRespo.body.message).to.equal('TypeError: Cannot read property \'payload\' of null');
                 expect(refreshRespo).to.not.have.property('jwt');
                 expect(refreshRespo).to.not.have.property('refresh-token');
-                request.post('/auth/logout').set('refresh-token', oldRefreshToken).then(() => {
-                  done();
-                })
+                done();
               } catch (err) {
                 done(err);
               }
@@ -470,9 +466,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
               resp => {
                 expect(resp.status).to.equal(401);
                 expect(resp.body.message).to.equal('Refresh token is no longer valid, user has to login');
-                request.post('/auth/logout').set('refresh-token', refreshToken).then(() => {
-                  done(); 
-                }); 
+                done();
               }
             )
             .catch(err => done(err));
@@ -486,7 +480,8 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
     const newUser: IUser = {
       username: 'TestEmail',
       email: 'email@taken.com',
-      password: 'xxx'
+      password: 'xxx',
+      organizationId: '333333333333333333333333'
     };
 
     const response = await request
@@ -505,8 +500,6 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
 
     expect(response2.status).to.equal(200);
     expect(response2.body).to.be.true;
-
-    await request.post('/auth/logout').set('authorization', token);
   });
 
   it('POSITIVE - Should return false if email is already taken but by user himself', async () => {
@@ -539,7 +532,8 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
         nationalNumber: "(234) 222-2222",
         number: "+12342222222"
       },
-      password: 'xxx',
+      organizationId: '333333333333333333333333',
+      password: 'xxx'
     };
 
     const response = await request
@@ -560,8 +554,6 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
 
     expect(response2.status).to.equal(200);
     expect(response2.body).to.be.true;
-
-    await request.post('/auth/logout').set('authorization', token);
   });
 
 

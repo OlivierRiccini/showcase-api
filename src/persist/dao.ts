@@ -72,9 +72,9 @@ export abstract class DAOImpl<T, Q extends mongoose.Document> implements DAO<T> 
             this.model.findOne({ _id: new ObjectID(id) })
             .lean()
             .exec((err: any, document: any) => {
-                if (err) {
+                if (err || !document) {
                     debug('get - FAILED => document with id => ${id} not found');
-                    reject(new Error(`Document with id => ${id} not found`));
+                    reject(new Error(`Document with id => ${id} not found`));     
                 } else {
                     debug('get - OK => ' + JSON.stringify(document));
                     resolve(this.idNormalizator(document));

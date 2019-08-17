@@ -1,5 +1,6 @@
 import { Service } from "typedi";
 import { IEmailObj } from "src/models/email-model";
+import { BadRequestError } from "routing-controllers";
 
 var AWS = require('aws-sdk');
 
@@ -14,10 +15,15 @@ export class AwsSESManager {
   }
 
   public async formatAndSendEmail(message: string): Promise<void> {
-    const params = await this.createSendEmailParams(message);
-    console.log('Sending email....');
-    await this.sendPromise.sendEmail(params).promise();
-    console.log('Email sent!');
+    let params: IEmailObj;
+    try {
+      params = await this.createSendEmailParams(message);
+      console.log('Sending email....');
+      await this.sendPromise.sendEmail(params).promise();
+      console.log('Email sent!');
+    } catch(err) {
+      throw new BadRequestError(err);
+    }
   }
 
   private init(apiVersion: string, region: string) {

@@ -4,12 +4,14 @@ import { HttpError } from "routing-controllers";
 import { SecureService } from "./secure-service";
 import { MessagesService } from "./messages-service";
 import validator from 'validator';
+import { OrganizationDAO, IOrganization } from "../models/organization-model";
 // const generator = require('generate-password');
 
 @Service()
 export class AuthService {
     @Inject(type => SecureService) private secureService: SecureService;
-    @Inject() private userDAO: UserDAO;
+    @Inject() private userDAO: UserDAO; 
+    @Inject() private organizationDAO: OrganizationDAO;
     @Inject() private messagesService: MessagesService;
     
     constructor() { }
@@ -18,6 +20,7 @@ export class AuthService {
         try {
             let user = req;
             user.password = await this.secureService.hashPassword(user.password);
+            await this.validateOrganizationId(user);
             if (user.email) { await this.emailValidation(user.email) };
             if (user.phone) { await this.phoneValidation(user.phone) };
             user = await this.userDAO.create(req);
@@ -67,14 +70,6 @@ export class AuthService {
             throw new HttpError(400, err.message);
         }
     }
-
-    public async logout(refreshToken: string): Promise<void> {
-        try {
-            await this.secureService.removeRefreshToken(refreshToken);
-        } catch (err) {
-            throw new HttpError(400, err);
-        }
-    };
 
     public async isEmailAlreadyTaken(email: string, userId?: string): Promise<boolean> {
         const users: IUser[] = await this.userDAO.find({find: { email }});
@@ -129,6 +124,20 @@ export class AuthService {
             }
         }
         return query;
+    }
+
+    private async validateOrganizationId(user: IUser): Promise<void> {
+        if (!user.organizationId) {
+            throw new Error('Cannot register user with no organizationId');
+        };
+        try {
+            const organization: IOrganization = await this.organizationDAO.get(user.organizationId);
+            if (!organization) {
+                throw new Error('Organization id provided is not valid');
+            }
+        } catch (err) {
+            throw new Error('Organization id provided is not valid');
+        }
     }
 
     private async findUserByEmailOrPhone(email: string, phone: IPhone): Promise<IUser> {

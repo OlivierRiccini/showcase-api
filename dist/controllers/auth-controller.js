@@ -76,13 +76,6 @@ let AuthController = class AuthController {
             };
         });
     }
-    logout(refreshToken) {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield this.authService.logout(refreshToken);
-            debug('POST /auth/logout => Successfully logged out!');
-            return 'Successfully logged out!';
-        });
-    }
     forgotPassord(contact) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.authService.forgotPassword(contact);
@@ -140,13 +133,6 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "refresh", null);
-__decorate([
-    routing_controllers_1.Post('/logout'),
-    __param(0, routing_controllers_1.HeaderParam('refreshToken')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "logout", null);
 __decorate([
     routing_controllers_1.Post('/forgot-password'),
     __param(0, routing_controllers_1.Body()),

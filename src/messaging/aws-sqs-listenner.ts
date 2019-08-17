@@ -35,24 +35,30 @@ export class AWSSqsListenner {
       }
     });
     app.on('error', (err) => {
+      console.log('zeubi 1');
       console.error(err.message);
     });
     app.on('processing_error', (err) => {
+      console.log('zeubi 2');
       console.error(err.message);
     });
     app.start();
   }
 
   private async formatAndSendMessage(queue: string, message: any) {
-    switch(queue) {
-      case 'EMAIL_QUEUE':
-        await this.awsSesManager.formatAndSendEmail(message);
-        break;
-      case 'SMS_QUEUE':
-        await this.awsSnsManager.formatAndSendSMS(message);
-        break;
-      default:
-        throw new BadRequestError('Message type provided not recognized');
+    try {
+      switch(queue) {
+        case 'EMAIL_QUEUE':
+          await this.awsSesManager.formatAndSendEmail(message);
+          break;
+        case 'SMS_QUEUE':
+          await this.awsSnsManager.formatAndSendSMS(message);
+          break;
+        default:
+          throw new BadRequestError('Message type provided not recognized');
+      }
+    } catch (err) { 
+      throw new BadRequestError(err);
     }
   }
 

@@ -4,7 +4,6 @@ import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
 import { CONSTANTS } from "../persist/constants";
 import { HttpError } from "routing-controllers";
-import { SecureDAO, ISecure } from "../models/secure-model";
 import { AuthService } from "./auth-service";
 const generator = require('generate-password');
 
@@ -14,7 +13,6 @@ export interface ITokens { accessToken: string, refreshToken: string };
 export class SecureService {
     @Inject(type => AuthService) private authService: AuthService;
     @Inject() private userDAO: UserDAO;
-    @Inject() private secureDAO: SecureDAO;
 
     constructor() {};
 
@@ -64,7 +62,8 @@ export class SecureService {
             id: user.id,
             username: user.username,
             email: user.email || null,
-            phone: user.phone || null
+            phone: user.phone || null,
+            organizationId: user.organizationId || null
         };
         const accessToken = await jwt.sign({payload}, CONSTANTS.ACCESS_TOKEN_SECRET, { expiresIn: CONSTANTS.ACCESS_TOKEN_EXPIRES_IN }).toString();
         return accessToken;
@@ -75,20 +74,7 @@ export class SecureService {
             const payload = { userId: user.id };
             const refreshSecret = CONSTANTS.REFRESH_TOKEN_SECRET + user.password;
             const refreshToken = await jwt.sign({payload}, refreshSecret, { expiresIn: CONSTANTS.REFRESH_TOKEN_EXPIRES_IN }).toString();
-            await this.secureDAO.create({ refreshToken });
             return refreshToken;
-        } catch (err) {
-            throw new HttpError(404, err.message);
-        }
-    }
-
-    public async removeRefreshToken(refreshToken: string): Promise<void> {
-        try {
-            const secures: ISecure[] = await this.secureDAO.find({find: { refreshToken }});
-            if (secures && secures.length < 1) {
-                throw new HttpError(401, 'Refresh token not found when trying to delete it');
-            }
-            await this.secureDAO.delete(secures[0].id);
         } catch (err) {
             throw new HttpError(404, err.message);
         }

@@ -20,55 +20,50 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typedi_1 = require("typedi");
 const aws_sqs_sender_1 = require("../messaging/aws-sqs-sender");
 const routing_controllers_1 = require("routing-controllers");
-let nodemailer = require('nodemailer');
+// let nodemailer = require('nodemailer');
 let aws = require('aws-sdk');
-// configure AWS SDK
-// aws.config.loadFromPath('config.json');
-//  // create Nodemailer SES transporter
-// let transporter = nodemailer.createTransport({
-//     SES: new aws.SES({
-//         apiVersion: '2010-12-01'
-//     })
-// });
 let MessagesService = class MessagesService {
     constructor() {
-        // create Nodemailer SES transporter
-        aws.config.update({ region: 'us-east-1' });
-        this.transporter = nodemailer.createTransport({
-            SES: new aws.SES({
-                apiVersion: '2010-12-01'
-            })
-        });
+        //  // create Nodemailer SES transporter
+        // aws.config.update({region: 'us-east-1'});
+        // this.transporter = nodemailer.createTransport({
+        //     SES: new aws.SES({
+        //         apiVersion: '2010-12-01'
+        //     })
+        // });
     }
     sendEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            // send some mail
-            this.transporter.sendMail({
-                from: email.from,
-                to: email.from,
-                subject: email.subject,
-                text: email.content,
-                ses: {
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Action": "ses:SendRawEmail",
-                            "Resource": "*"
-                        }
-                    ]
-                }
-            }, (err, info) => {
-                console.log(err);
-                if (info) {
-                    console.log(info);
-                }
-            });
             // try {
-            //     const messageForQueue: IMessage = { type: 'email', email };
-            //     await this.awsSqsSender.sendMessageToQueue(messageForQueue);
-            // } catch {
-            //     throw new BadRequestError('OOpss something went wrong while sending email');
+            //     await this.transporter.sendMail({
+            //         from: email.from,
+            //         to: email.to,
+            //         subject: email.subject,
+            //         text: email.content,
+            //         // ses: { // optional extra arguments for SendRawEmail
+            //         //     Tags: [{
+            //             //         Name: 'tag name',
+            //             //         Value: 'tag value'
+            //             //     }]
+            //             // }
+            //         })
+            //     } catch (err) {
+            //         if (err.message.includes('Email address is not verified.')) {
+            //         console.log(err);
+            //         await this.verifySenderEmail(email.from);
+            //     }
             // }
+            try {
+                const messageForQueue = { type: 'email', email };
+                yield this.awsSqsSender.sendMessageToQueue(messageForQueue);
+            }
+            catch (err) {
+                console.log('olaaaa ' + err);
+                if (err.message.includes('Email address is not verified.')) {
+                    yield this.verifySenderEmail(email.from);
+                }
+                throw new routing_controllers_1.BadRequestError('OOpss something went wrong while sending sms');
+            }
         });
     }
     sendSMS(sms) {
@@ -79,6 +74,19 @@ let MessagesService = class MessagesService {
             }
             catch (_a) {
                 throw new routing_controllers_1.BadRequestError('OOpss something went wrong while sending sms');
+            }
+        });
+    }
+    verifySenderEmail(emailSender) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield new aws.SES({
+                    apiVersion: '2010-12-01'
+                }).verifyEmailIdentity({ EmailAddress: emailSender }).promise();
+                console.log("Email verification initiated");
+            }
+            catch (err) {
+                console.error('rerererer ' + err, err.stack);
             }
         });
     }

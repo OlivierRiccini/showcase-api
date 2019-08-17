@@ -23,6 +23,7 @@ const routing_controllers_1 = require("routing-controllers");
 const secure_service_1 = require("./secure-service");
 const messages_service_1 = require("./messages-service");
 const validator_1 = require("validator");
+const organization_model_1 = require("../models/organization-model");
 // const generator = require('generate-password');
 let AuthService = class AuthService {
     constructor() { }
@@ -31,6 +32,7 @@ let AuthService = class AuthService {
             try {
                 let user = req;
                 user.password = yield this.secureService.hashPassword(user.password);
+                yield this.validateOrganizationId(user);
                 if (user.email) {
                     yield this.emailValidation(user.email);
                 }
@@ -96,17 +98,6 @@ let AuthService = class AuthService {
             }
         });
     }
-    logout(refreshToken) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.secureService.removeRefreshToken(refreshToken);
-            }
-            catch (err) {
-                throw new routing_controllers_1.HttpError(400, err);
-            }
-        });
-    }
-    ;
     isEmailAlreadyTaken(email, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const users = yield this.userDAO.find({ find: { email } });
@@ -163,6 +154,23 @@ let AuthService = class AuthService {
             };
         }
         return query;
+    }
+    validateOrganizationId(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!user.organizationId) {
+                throw new Error('Cannot register user with no organizationId');
+            }
+            ;
+            try {
+                const organization = yield this.organizationDAO.get(user.organizationId);
+                if (!organization) {
+                    throw new Error('Organization id provided is not valid');
+                }
+            }
+            catch (err) {
+                throw new Error('Organization id provided is not valid');
+            }
+        });
     }
     findUserByEmailOrPhone(email, phone) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -241,6 +249,10 @@ __decorate([
     typedi_1.Inject(),
     __metadata("design:type", user_model_1.UserDAO)
 ], AuthService.prototype, "userDAO", void 0);
+__decorate([
+    typedi_1.Inject(),
+    __metadata("design:type", organization_model_1.OrganizationDAO)
+], AuthService.prototype, "organizationDAO", void 0);
 __decorate([
     typedi_1.Inject(),
     __metadata("design:type", messages_service_1.MessagesService)
