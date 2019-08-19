@@ -1,5 +1,4 @@
 'use strict';
-process.env.NODE_ENV = 'test';
 var app = require('../../dist/app').app;
 
 import 'mocha';
@@ -280,20 +279,19 @@ describe('HTTP - TESTING USER ROUTES ./http/user.test', function() {
       .patch(`/users/${VALID_USER.id}/update-password`)
       .set('Authorization', VALID_USER_TOKEN)
       .send({oldPassword, newPassword});
-
-    expect(response.status).to.equal(200);
-    expect(response.body).to.equals('Password successfully updated!');
-
-    const userFromDB: IUser = await userHelper.getUserById(VALID_USER.id);
-    // Password shoudl be the same since it's not been successfully updated
-    await expect(secureService.comparePassword(newPassword, userFromDB.password)).to.be.fulfilled;
-
-    VALID_USER_CREDENTIALS_EMAIL.password = newPassword;
-
-    const response2 = await request
+      expect(response.status).to.equal(200);
+      expect(response.body).to.equals('Password successfully updated!');
+      
+      const userFromDB: IUser = await userHelper.getUserById(VALID_USER.id);
+      // Password shoudl be the same since it's not been successfully updated
+      await expect(secureService.comparePassword(newPassword, userFromDB.password)).to.be.fulfilled;
+      
+      VALID_USER_CREDENTIALS_EMAIL.password = newPassword;
+      
+      const response2 = await request
       .post('/auth/login')
       .send(VALID_USER_CREDENTIALS_EMAIL);
-    
+
     expect(response2.status).to.equal(200);
     expect(response2.body).to.have.property('jwt');
     
@@ -305,12 +303,12 @@ describe('HTTP - TESTING USER ROUTES ./http/user.test', function() {
 
     VALID_USER_TOKEN = token;
 
-    // making trip request
-    const response3 = await request
-      .get('/trips')
-      .set('Authorization', VALID_USER_TOKEN);
+    // // making trip request
+    // const response3 = await request
+    //   .get('/trips')
+    //   .set('Authorization', VALID_USER_TOKEN);
 
-    expect(response3.status).to.equal(200);  
+    // expect(response3.status).to.equal(200);  
   });
 
 });

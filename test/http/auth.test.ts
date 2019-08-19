@@ -1,5 +1,4 @@
 'use strict';
-process.env.NODE_ENV = 'test';
 var app = require('../../dist/app').app;
 
 import 'mocha';

@@ -32,5 +32,15 @@ export class MessageController {
         debug(err.message)
     }
   }
+
+  @Post('/test')
+  async testMessage(@Body() message: { to: string; text: string }): Promise<string> {
+    try {
+        debug('POST /messages/test => Test message sent!');
+        return  `Test message working. You sent ${message.text} to ${message.to}`;
+    } catch(err) {
+        debug(err.message)
+    }
+  }
  
 }

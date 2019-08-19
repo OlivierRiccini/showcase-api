@@ -2,12 +2,16 @@
   "name": "showcase-api",
   "version": "1.0.0",
   "description": "api for showcase UIs",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "build": "tsc",
     "start": "npm run build && node dist/app.js",
-    "test": "npm run build && nyc mocha",
-    "start-local-mongo": "~/./mongo/bin/mongod --dbpath /Users/olivierriccini/mongo/bin"
+    "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && npm run build && nyc mocha",
+    "start-local-mongo": "~/./mongo/bin/mongod --dbpath /Users/olivierriccini/mongo/bin",
+    "postinstall": "npm run build"
+  },
+  "engines": {
+    "node": "10.14.2"
   },
   "keywords": [],
   "author": "",
@@ -46,6 +50,7 @@
     "passport-facebook": "^3.0.0",
     "q": "^1.5.1",
     "reflect-metadata": "^0.1.12",
+    "retry": "^0.12.0",
     "routing-controllers": "^0.7.7",
     "save": "^2.3.3",
     "smtp-server": "^3.5.0",
@@ -64,6 +69,7 @@
     "@types/mongodb": "^3.1.17",
     "@types/mongoose": "^5.3.5",
     "@types/node": "^10.14.13",
+    "@types/retry": "^0.12.0",
     "chai": "^4.2.0",
     "chai-http": "^4.2.1",
     "expect": "^24.8.0",
