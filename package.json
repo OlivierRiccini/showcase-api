@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && node dist/app.js",
+    "start-dev": "npm run build && node dist/app.js",
+    "start": "node dist/app.js",
     "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && npm run build && nyc mocha",
     "start-local-mongo": "~/./mongo/bin/mongod --dbpath /Users/olivierriccini/mongo/bin",
     "postinstall": "npm run build"
