@@ -65,6 +65,7 @@ describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
 
   after('Cleaning DB', async () => {
     generalHelper.cleanDB();
+    // app.close();
   });
 
   it('POSITIVE - Should signUp a user and get token back', async () => {

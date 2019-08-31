@@ -51,7 +51,7 @@ describe('HTTP - TESTING USER ROUTES ./http/user.test', function() {
 
   before('Create user', async () => {
     generalHelper.cleanDB();
-    await organizationHelper.create()
+    await organizationHelper.create();
     const response = await request
       .post('/auth/register')
       .send(VALID_USER);
@@ -62,6 +62,7 @@ describe('HTTP - TESTING USER ROUTES ./http/user.test', function() {
 
   after('Cleaning DB', async () => {
     generalHelper.cleanDB();
+    // app.close();
   });
 
   it('POSTIVE - Should update user profile', async () => {

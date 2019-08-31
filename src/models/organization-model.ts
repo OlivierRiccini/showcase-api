@@ -28,15 +28,17 @@ export interface OrganizationDocument extends IOrganization, mongoose.Document {
 
 export class OrganizationDAO extends DAOImpl<IOrganization, OrganizationDocument> {
     constructor() {
+        const PhoneSchema = new mongoose.Schema({
+            countryCode: String,
+            internationalNumber: String,
+            nationalNumber: String,
+            number: String,
+        }, { _id : false });
+
         const OrganizationSchema = new mongoose.Schema({
             name: String,
             email: String,
-            phones: [{
-                countryCode: String,
-                internationalNumber: String,
-                nationalNumber: String,
-                number: String,
-            }],
+            phones: [PhoneSchema],
             address: String,
             description: String
         });

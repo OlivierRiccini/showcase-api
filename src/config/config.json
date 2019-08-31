@@ -1,41 +1,28 @@
 {
-    "test": {
-      "DEBUG": "server, data-base, http, service, seed, test, DAO",
-      "PORT": 3000,
-      "MONGODB_URI": "mongodb://127.0.0.1:27017/showcase-api-test",
-      "ACCESS_TOKEN_SECRET": "cjze!9XN!HJKCÀKkd!!!HXjgV",
-      "REFRESH_TOKEN_SECRET": "guyg6Wfty898xvx7!!!HXjgV",
-      "ACCESS_TOKEN_EXPIRES_IN": "5000",
-      "REFRESH_TOKEN_EXPIRES_IN": "10000",
-      "server": {
-        "port": 12345,
-        "host": "127.0.0.1"
-      }
-    },
-    "development": {
-      "DEBUG": "server, data-base, http, service, DAO",
-      "PORT": 3000,
-      "MONGODB_URI": "mongodb://127.0.0.1:27017/showcase-api-dev",
-      "ACCESS_TOKEN_SECRET": "dzidkpaz0akzncHHdkn('cazza",
-      "REFRESH_TOKEN_SECRET": "skjgsc!87YhhGHH§6TFVTÈXu",
-      "ACCESS_TOKEN_EXPIRES_IN": "10S",
-      "REFRESH_TOKEN_EXPIRES_IN": "60S",
-      "server": {
-        "port": 12345,
-        "host": "127.0.0.1"
-      }
-    },
-    "production": {
-      "DEBUG": "server, data-base, http, service, DAO",
-      "PORT": 3000,
-      "MONGODB_URI": "mongodb://127.0.0.1:27017/showcase-api-dev",
-      "ACCESS_TOKEN_SECRET": "coazhcjzabc!èè78!caz!cgazuc",
-      "REFRESH_TOKEN_SECRET": "skj!èéby!unri!JKCBkjbzcaz77(da",
-      "ACCESS_TOKEN_EXPIRES_IN": "10S",
-      "REFRESH_TOKEN_EXPIRES_IN": "60S",
-      "server": {
-        "port": 12345,
-        "host": "127.0.0.1"
-      }
+  "test": {
+    "DEBUG": "server, data-base, http, service, seed, test, DAO",
+    "PORT": 3000,
+    "MONGODB_URI": "mongodb://127.0.0.1:27017/showcase-api-test",
+    "ACCESS_TOKEN_SECRET": "cjze!9XN!HJKCÀKkd!!!HXjgV",
+    "REFRESH_TOKEN_SECRET": "guyg6Wfty898xvx7!!!HXjgV",
+    "ACCESS_TOKEN_EXPIRES_IN": "5000",
+    "REFRESH_TOKEN_EXPIRES_IN": "10000",
+    "server": {
+      "port": 12345,
+      "host": "127.0.0.1"
     }
+  },
+  "development": {
+    "DEBUG": "server, data-base, http, service, DAO",
+    "PORT": 3000,
+    "MONGODB_URI": "mongodb://127.0.0.1:27017/showcase-api-dev",
+    "ACCESS_TOKEN_SECRET": "dzidkpaz0akzncHHdkn('cazza",
+    "REFRESH_TOKEN_SECRET": "skjgsc!87YhhGHH§6TFVTÈXu",
+    "ACCESS_TOKEN_EXPIRES_IN": "10S",
+    "REFRESH_TOKEN_EXPIRES_IN": "60S",
+    "server": {
+      "port": 12345,
+      "host": "127.0.0.1"
+    }
+  }
 }

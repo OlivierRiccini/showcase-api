@@ -23,74 +23,63 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const debug = require('debug')('http');
 const routing_controllers_1 = require("routing-controllers");
 const typedi_1 = require("typedi");
-const messages_service_1 = require("../services/messages-service");
-let MessageController = class MessageController {
+const organization_service_1 = require("../services/organization-service");
+let OrganizationController = class OrganizationController {
     constructor() { }
-    sendEmail(email) {
+    //   @UseBefore(Authenticate)
+    createOrganization(organization) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.messagesService.sendEmail(email);
-                debug('POST /message/email => Email successfully sent!');
-                return 'Email successfully sent!';
-            }
-            catch (err) {
-                debug(err.message);
-            }
+            const newOrganization = yield this.organizationService.createOrganization(organization);
+            debug('POST /organizations => Successfully created!');
+            return newOrganization;
         });
     }
-    sendsms(sms) {
+    //   @UseBefore(Authenticate)
+    updateOrganization(id, organization) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.messagesService.sendSMS(sms);
-                debug('POST /message/sms => Sms successfully sent!');
-                return 'Sms successfully sent!';
-            }
-            catch (err) {
-                debug(err.message);
-            }
+            const updatedOrganization = yield this.organizationService.updateOrganization(organization, id);
+            debug(`PUT /organizations/${id}/update => Successfully updated!`);
+            return updatedOrganization;
         });
     }
-    testMessage(message) {
+    //   @UseBefore(Authenticate)
+    deleteOrganization(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                debug('POST /messages/test => Test message sent!');
-                return `Test message working. You sent ${message.text} to ${message.to}`;
-            }
-            catch (err) {
-                debug(err.message);
-            }
+            yield this.organizationService.deleteOrganization(id);
+            debug(`DEL /organizations/${id} => Successfully deleted!`);
+            return 'Organization successfully deleted!';
         });
     }
 };
 __decorate([
     typedi_1.Inject(),
-    __metadata("design:type", messages_service_1.MessagesService)
-], MessageController.prototype, "messagesService", void 0);
+    __metadata("design:type", organization_service_1.OrganizationService)
+], OrganizationController.prototype, "organizationService", void 0);
 __decorate([
-    routing_controllers_1.Post('/email'),
+    routing_controllers_1.Post('/'),
     __param(0, routing_controllers_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], MessageController.prototype, "sendEmail", null);
+], OrganizationController.prototype, "createOrganization", null);
 __decorate([
-    routing_controllers_1.Post('/sms'),
-    __param(0, routing_controllers_1.Body()),
+    routing_controllers_1.Put('/:id'),
+    __param(0, routing_controllers_1.Param('id')), __param(1, routing_controllers_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
-], MessageController.prototype, "sendsms", null);
+], OrganizationController.prototype, "updateOrganization", null);
 __decorate([
-    routing_controllers_1.Post('/test'),
-    __param(0, routing_controllers_1.Body()),
+    routing_controllers_1.Delete('/:id'),
+    __param(0, routing_controllers_1.Param('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], MessageController.prototype, "testMessage", null);
-MessageController = __decorate([
-    routing_controllers_1.JsonController('/messages'),
+], OrganizationController.prototype, "deleteOrganization", null);
+OrganizationController = __decorate([
+    routing_controllers_1.JsonController('/organizations'),
     typedi_1.Service(),
     __metadata("design:paramtypes", [])
-], MessageController);
-exports.MessageController = MessageController;
-//# sourceMappingURL=message-controller.js.map
+], OrganizationController);
+exports.OrganizationController = OrganizationController;
+//# sourceMappingURL=organization-controller.js.map
