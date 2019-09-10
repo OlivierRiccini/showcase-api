@@ -31,3 +31,4 @@ app.listen(app.get("port"), () => {
 });
 
 module.exports.app = app;
+module.exports.mongooseConnection = mongooseConnection;

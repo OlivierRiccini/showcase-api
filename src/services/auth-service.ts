@@ -20,7 +20,7 @@ export class AuthService {
         try {
             let user = req;
             user.password = await this.secureService.hashPassword(user.password);
-            await this.validateOrganizationId(user);
+            // await this.validateOrganizationId(user);
             if (user.email) { await this.emailValidation(user.email) };
             if (user.phone) { await this.phoneValidation(user.phone) };
             user = await this.userDAO.create(req);
@@ -126,19 +126,19 @@ export class AuthService {
         return query;
     }
 
-    private async validateOrganizationId(user: IUser): Promise<void> {
-        if (!user.organizationId) {
-            throw new Error('Cannot register user with no organizationId');
-        };
-        try {
-            const organization: IOrganization = await this.organizationDAO.get(user.organizationId);
-            if (!organization) {
-                throw new Error('Organization id provided is not valid');
-            }
-        } catch (err) {
-            throw new Error('Organization id provided is not valid');
-        }
-    }
+    // private async validateOrganizationId(user: IUser): Promise<void> {
+        // if (!user.organizationId) {
+        //     throw new Error('Cannot register user with no organizationId');
+        // };
+        // try {
+        //     const organization: IOrganization = await this.organizationDAO.get(user.organizationId);
+        //     if (!organization) {
+        //         throw new Error('Organization id provided is not valid');
+        //     }
+        // } catch (err) {
+        //     throw new Error('Organization id provided is not valid');
+        // }
+    // }
 
     private async findUserByEmailOrPhone(email: string, phone: IPhone): Promise<IUser> {
         const query = email ? { email} : { phone };

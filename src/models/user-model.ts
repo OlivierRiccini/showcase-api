@@ -11,7 +11,7 @@ export interface IPhone {
     countryCode: string,
     internationalNumber: string,
     nationalNumber: string,
-    number: string,
+    number: string
 }
 
 //Interface for model
@@ -22,7 +22,8 @@ export interface IUser {
     email?: string,
     phone?: IPhone,
     password: string,
-    organizationId: string
+    organizationId: string,
+    isAdmin?: boolean
 }
 
 export interface IUserCredentials {
@@ -43,7 +44,8 @@ export interface IPayload {
     username: string,
     email?: string,
     phone?: IPhone,
-    organizationId: string
+    organizationId: string,
+    isAdmin?: boolean
 }
 
 // Document
@@ -79,7 +81,8 @@ export class UserDAO extends DAOImpl<IUser, UserDocument> {
                 type: String,
                 require: true,
                 minlength: 6
-            }
+            },
+            isAdmin: Boolean
         });
        
         super('User', UserSchema);

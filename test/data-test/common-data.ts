@@ -1,6 +1,7 @@
 import { UserDAO } from '../../src/models/user-model';
 import { OrganizationDAO } from '../../src/models/organization-model';
 import { ObjectID } from 'bson';
+import { CatalogDAO, ICatalog } from '../../src/models/catalog-model';
 
 export const MODELS = [
     {
@@ -10,6 +11,10 @@ export const MODELS = [
     {
         name: 'Organization',
         DAO: new OrganizationDAO(),
+    },
+    {
+        name: 'Catalog',
+        DAO: new CatalogDAO(),
     }
 ];
 
@@ -56,5 +61,48 @@ export const MODELS_DATA = {
             organizationId: '333333333333333333333333',
             password: "123456"
         }
-    ]
+    ],
+    // Catalog: [
+    //     {
+    //         createdOn: new Date(),
+    //         lastUpdate: new Date(),
+    //         categories: [
+    //             {
+    //                 name: 'Equipement du domicile',
+    //                 subCategories: [
+    //                     {
+    //                         name: 'Lit et accessoires',
+    //                         comments: [
+    //                             'Lit médical', 
+    //                             `La prise en charge est assurée pour les patients ayant
+    //                             perdu leur autonomie motrice.
+    //                             Cette perte d&#39;autonomie peut-être transitoire ou
+    //                             définitive.`
+    //                         ],
+    //                         products: [
+    //                             {
+    //                                 designation: 'Forfait location lit + potence+ Barrières',
+    //                                 description: `Lit médical standard ou ultra bas (hauteur 19 cm - pour patient Alzheimer)`,
+    //                                 duration: 'semaine',
+    //                                 ratePro: 9.13,
+    //                                 tva: 20,
+    //                                 baseLPPTTC: 12.6,
+    //                                 LPPCode: 1241763
+    //                             },
+    //                             {
+    //                                 designation: 'Forfait location lit+potence+barrières',
+    //                                 description: 'Lit médical pour enfant de 3à 12 ans',
+    //                                 duration: 'semaine',
+    //                                 ratePro: 17,
+    //                                 tva: 20,
+    //                                 baseLPPTTC: 25,
+    //                                 LPPCode: 1283879
+    //                             }
+    //                         ]
+    //                     }
+    //                 ]
+    //             }
+    //         ]
+    //     }
+    // ]
 };

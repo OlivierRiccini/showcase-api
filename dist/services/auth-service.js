@@ -32,7 +32,7 @@ let AuthService = class AuthService {
             try {
                 let user = req;
                 user.password = yield this.secureService.hashPassword(user.password);
-                yield this.validateOrganizationId(user);
+                // await this.validateOrganizationId(user);
                 if (user.email) {
                     yield this.emailValidation(user.email);
                 }
@@ -155,23 +155,19 @@ let AuthService = class AuthService {
         }
         return query;
     }
-    validateOrganizationId(user) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!user.organizationId) {
-                throw new Error('Cannot register user with no organizationId');
-            }
-            ;
-            try {
-                const organization = yield this.organizationDAO.get(user.organizationId);
-                if (!organization) {
-                    throw new Error('Organization id provided is not valid');
-                }
-            }
-            catch (err) {
-                throw new Error('Organization id provided is not valid');
-            }
-        });
-    }
+    // private async validateOrganizationId(user: IUser): Promise<void> {
+    // if (!user.organizationId) {
+    //     throw new Error('Cannot register user with no organizationId');
+    // };
+    // try {
+    //     const organization: IOrganization = await this.organizationDAO.get(user.organizationId);
+    //     if (!organization) {
+    //         throw new Error('Organization id provided is not valid');
+    //     }
+    // } catch (err) {
+    //     throw new Error('Organization id provided is not valid');
+    // }
+    // }
     findUserByEmailOrPhone(email, phone) {
         return __awaiter(this, void 0, void 0, function* () {
             const query = email ? { email } : { phone };

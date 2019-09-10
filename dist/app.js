@@ -24,4 +24,5 @@ app.listen(app.get("port"), () => {
     debug(`Server running on port ${app.get("port")}`);
 });
 module.exports.app = app;
+module.exports.mongooseConnection = mongooseConnection;
 //# sourceMappingURL=app.js.map

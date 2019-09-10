@@ -63,7 +63,8 @@ export class SecureService {
             username: user.username,
             email: user.email || null,
             phone: user.phone || null,
-            organizationId: user.organizationId || null
+            organizationId: user.organizationId || null,
+            isAdmin: user.isAdmin || false
         };
         const accessToken = await jwt.sign({payload}, CONSTANTS.ACCESS_TOKEN_SECRET, { expiresIn: CONSTANTS.ACCESS_TOKEN_EXPIRES_IN }).toString();
         return accessToken;

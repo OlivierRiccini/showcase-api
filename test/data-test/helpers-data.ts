@@ -6,6 +6,7 @@ import { MODELS_DATA } from './common-data';
 import * as jwt from 'jsonwebtoken';
 import { CONSTANTS } from '../../src/persist/constants';
 import { OrganizationDAO, IOrganization } from '../../src/models/organization-model';
+import { ObjectID } from 'bson';
 // import { SecureService } from '../../src/services/secure-service';
 var mongoose = require('mongoose');
 
@@ -46,6 +47,38 @@ export class UserHelper {
         const response = await this.request
             .post('/auth/register')
             .send(newUser)
+        
+        let token = response.body['jwt'];
+
+        if (token.startsWith('Bearer ')) {
+            // Remove Bearer from string
+            token = token.slice(7, token.length);
+        }
+
+        const decoded = jwt.verify(token, CONSTANTS.ACCESS_TOKEN_SECRET, null);
+        const userResponse = decoded['payload'];
+        return { user: userResponse, token };
+    }
+
+    public async getAdminUserAndToken(): Promise<{ user: IUser, token: string }> {
+        const user: IUser = {
+            _id: new ObjectID('111111111111111111111110'),
+            username: "Big Boss",
+            email: "big.boss@admin.com",
+            phone: {
+                countryCode: "US",
+                internationalNumber: "+1 234-243-2222",
+                nationalNumber: "(234) 243-2222",
+                number: "+12342432222"
+            },
+            organizationId: '333333333333333333333333',
+            password: "123456",
+            isAdmin: true
+        };
+        
+        const response = await this.request
+            .post('/auth/register')
+            .send(user)
         
         let token = response.body['jwt'];
 

@@ -128,7 +128,6 @@ describe('COMMON - TESTING EACH MODEL DAO - ./common/dao.test', function() {
         for (const modelData of MODELS_DATA[MODEL.name]) {
             await modelDAO.create(modelData);
         }
-
         const nbOfDocuments = await modelDAO.count({});
         expect(nbOfDocuments).to.equals(MODELS_DATA[MODEL.name].length);
     });
