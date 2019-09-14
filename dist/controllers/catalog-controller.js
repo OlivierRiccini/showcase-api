@@ -11,105 +11,78 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const typedi_1 = require("typedi");
 // import { AuthenticatedOnly, NotInProduction, AgentOnly } from '../middlewares/authorization-middleware';
 let fs = require('fs');
-// const config = require('config');
-// const currentVersion = config.get('application.currentVersion');
 const catalog_model_1 = require("../models/catalog-model");
 const auth_middleware_1 = require("../middlewares/auth-middleware");
-// import * as multer from 'multer';
-/**
- * Controller for documents
- */
-// let conn = mongoose.connection;
-// let multer = require('multer');
-// let GridFsStorage = require('multer-gridfs-storage');
-// let Grid = require('gridfs-stream');
-// Grid.mongo = mongoose.mongo;
-// let gfs = Grid(conn.db);
-//  // Setting up the storage element
-// let storage = GridFsStorage({
-//   gfs : gfs,
-// filename: (req, file, cb) => {
-//     let date = Date.now();
-//     // The way you want to store your file in database
-//     cb(null, file.fieldname + '-' + date + '.'); 
-// },
-// // Additional Meta-data that you want to store
-// metadata: function(req, file, cb) {
-//     cb(null, { originalname: file.originalname });
-// },
-// root: 'ctFiles' // Root collection name
-// });
-// Multer configuration for single file uploads
-// let upload = multer({
-//   storage: storage
-// }).single('file');
 let DocumentsController = class DocumentsController {
     constructor(catalogDAO) {
         this.catalogDAO = catalogDAO;
     }
-    // @Post()
-    // upload(@Req() req, @Res() res) {
-    //   console.log(req);
-    //   // upload(req,res, (err) => {
-    //   //   if(err){
-    //   //        res.json({error_code:1,err_desc:err});
-    //   //        return;
-    //   //   }
-    //   //   res.json({error_code:0, error_desc: null, file_uploaded: true});
-    //   // });
-    //   // // if(err){
-    //   // //      res.json({error_code:1,err_desc:err});
-    //   // //      return;
-    //   // // }
-    //   // res.json({error_code:0, error_desc: null, file_uploaded: true});
-    // };
     //   @UseBefore(AdminOnly)
     uploadsNewDocument(file) {
-        let name = file.originalname;
-        let mimetype = this.catalogDAO.mimetypeOf(file);
-        let filePath = file.path;
-        let buffer = file.buffer;
-        // Regarder si l'extension est valide
-        if (!this.catalogDAO.isSafeFile(name)) {
-            throw new routing_controllers_1.HttpError(400, 'file extension not accepted');
-        }
-        if (file.path != null) {
-            return new Promise((resolve, reject) => {
-                reject('Unsupported mode of operation for multer - Disk');
-            });
-        }
-        else {
-            // file.path == null // use buffer
-            let document = {
-                file: buffer,
-                name: name,
-                mimeType: mimetype
-            };
-            return this.catalogDAO.create(document).then(saved => {
-                return saved;
-            });
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let name = file.originalname;
+                let mimetype = this.catalogDAO.mimetypeOf(file);
+                let buffer = file.buffer;
+                // Regarder si l'extension est valide
+                if (!this.catalogDAO.isSafeFile(name)) {
+                    throw new Error('file extension not accepted');
+                }
+                if (file.path != null) {
+                    throw new Error('Unsupported mode of operation for multer - Disk');
+                }
+                // file.path == null // use buffer
+                let document = {
+                    file: buffer,
+                    name: name,
+                    mimeType: mimetype
+                };
+                return yield this.catalogDAO.create(document);
+            }
+            catch (err) {
+                throw new routing_controllers_1.HttpError(400, err);
+            }
+        });
     }
-    retrievesDocumentByItsID(id, response) {
-        return this.catalogDAO
-            .get(id)
-            .then(data => {
-            if (data) {
-                response.append('Content-Type', data.mimeType);
+    retrievesLastCatalog(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const data = yield this.catalogDAO.get();
+                response.set('Content-Type', data.mimeType);
                 response.end(data.file.buffer, 'UTF-8');
+                response.send(data);
             }
-            else {
-                response.status(404);
-                // 404 handler will take care of message content
+            catch (err) {
+                throw new routing_controllers_1.HttpError(400, err);
             }
-        })
-            .catch(error => {
-            response.status(500).send(error.message);
+            // response.send(data);
+            // return this.catalogDAO
+            //   .get()
+            //   .then(data => {
+            //     if (data) {
+            //       return response.send(data);
+            //     } else {
+            //       response.status(404);
+            //       return response.send('error');
+            //       // 404 handler will take care of message content
+            //     }
+            //   })
+            //   .catch(error => {
+            //     return response.status(500).send(error.message);
+            //   });
         });
     }
     deletesDocumentByItsId(id, response) {
@@ -133,12 +106,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], DocumentsController.prototype, "uploadsNewDocument", null);
 __decorate([
-    routing_controllers_1.Get('/:id'),
-    __param(0, routing_controllers_1.Param('id')), __param(1, routing_controllers_1.Res()),
+    routing_controllers_1.Get(),
+    __param(0, routing_controllers_1.Req()), __param(1, routing_controllers_1.Res()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", void 0)
-], DocumentsController.prototype, "retrievesDocumentByItsID", null);
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], DocumentsController.prototype, "retrievesLastCatalog", null);
 __decorate([
     routing_controllers_1.UseBefore(auth_middleware_1.AdminOnly),
     routing_controllers_1.Delete('/:id'),

@@ -5,6 +5,14 @@
 // // import validator from 'validator';
 // // import { ContactMode } from './shared-interfaces';
 // // const debug = require('debug')('DAO');
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose = require("mongoose");
 const dao_1 = require("../persist/dao");
@@ -57,21 +65,23 @@ class CatalogDAO extends dao_1.DAOImpl {
     }
     create(obj) {
         return new Promise((resolve, reject) => {
-            let metadata = Object.assign({}, obj);
-            let options = {
+            // let metadata = Object.assign({}, obj);
+            const options = {
                 metadata: {
                     contentType: obj.mimeType
                 }
             };
-            let bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db);
+            const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db);
+            // Drop DB to keep just one catalog stored in it
+            bucket.drop();
             this.makeReadStream(obj)
                 .pipe(bucket.openUploadStream(obj.name, options))
-                .on('error', function (error) {
+                .on('error', (error) => {
                 reject(error);
             })
-                .on('finish', function (uploadedFileInfo) {
-                let ext = path.extname(uploadedFileInfo.filename);
-                let result = {
+                .on('finish', (uploadedFileInfo) => {
+                const ext = path.extname(uploadedFileInfo.filename);
+                const result = {
                     id: uploadedFileInfo._id.toString() + ext,
                     name: uploadedFileInfo.filename,
                     mimeType: obj.mimeType
@@ -80,7 +90,74 @@ class CatalogDAO extends dao_1.DAOImpl {
             });
         });
     }
-    get(id) {
+    get() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db);
+                bucket
+                    .find()
+                    .sort({ _id: -1 })
+                    .limit(1)
+                    .toArray()
+                    .then((items) => {
+                    if (items.length > 0) {
+                        const item = items[0];
+                        const memstream = this.makeWritableStream();
+                        const oid = mongoose.Types.ObjectId(this.stripExtension(item._id.toString()));
+                        bucket
+                            .openDownloadStream(oid)
+                            .pipe(memstream)
+                            .on('error', (error) => {
+                            reject(error);
+                        })
+                            .on('finish', () => {
+                            let ext = path.extname(item.filename);
+                            let result = {
+                                id: item._id.toString() + ext,
+                                mimeType: item.metadata.contentType,
+                                file: { buffer: memstream.toBuffer() },
+                                name: item.filename
+                            };
+                            resolve(result);
+                        });
+                    }
+                })
+                    .catch((error) => reject(error));
+            });
+            // try {
+            //     let bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db);
+            //     const items = await bucket.find().sort({ _id: -1 }).limit(1).toArray();
+            //     if (items.length > 0) {
+            //         let item = items[0];
+            //         let memstream = this.makeWritableStream();
+            //         const oid = mongoose.Types.ObjectId(this.stripExtension(item._id.toString()));
+            //         bucket
+            //         .openDownloadStream(oid)
+            //         .pipe(memstream)
+            // .on('error', (error) => {
+            // reject(error);
+            // throw new Error('Hummmm error');
+            //         })
+            //         .on('finish', () => {
+            //             let ext = path.extname(item.filename);
+            //             this.result = {
+            //             id: item._id.toString() + ext,
+            //             mimeType: item.metadata.contentType,
+            //             file: { buffer: memstream.toBuffer() },
+            //             name: item.filename
+            //             };
+            //         });
+            //     } 
+            //     return this.result;
+            //     // try {
+            //     // } catch(err) {
+            //     // }
+            // } catch(err) {
+            //     throw new Error('Mega error');
+            // }
+        });
+    }
+    getByid(id) {
         return new Promise((resolve, reject) => {
             let bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db);
             let oid = mongoose.Types.ObjectId(this.stripExtension(id));
