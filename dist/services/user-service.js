@@ -22,7 +22,7 @@ const user_model_1 = require("../models/user-model");
 const auth_service_1 = require("./auth-service");
 const routing_controllers_1 = require("routing-controllers");
 const secure_service_1 = require("./secure-service");
-const messages_service_1 = require("./messages-service");
+const mail_service_1 = require("./mail-service");
 let UserService = class UserService {
     constructor() { }
     updateUser(user, userId) {
@@ -61,19 +61,19 @@ let UserService = class UserService {
     sendMessagesAfterRestePassword(user, newPassword) {
         return __awaiter(this, void 0, void 0, function* () {
             if (user.email) {
-                yield this.messagesService.sendEmail({
+                yield this.mailService.send({
                     from: 'info@olivierriccini.com',
                     to: user.email,
                     subject: 'New Password',
-                    content: `Hey ${user.username.toUpperCase()}, you just reste your password, this is your new one: ${newPassword}`
+                    text: `Hey ${user.username.toUpperCase()}, you just reste your password, this is your new one: ${newPassword}`
                 });
             }
-            if (user.phone && user.phone.internationalNumber) {
-                yield this.messagesService.sendSMS({
-                    phone: user.phone.internationalNumber,
-                    content: `Hey ${user.username.toUpperCase()}, you just reste your password, this is your new one: ${newPassword}`
-                });
-            }
+            // if (user.phone && user.phone.internationalNumber) {
+            //     await this.messagesService.sendSMS({
+            //         phone: user.phone.internationalNumber,
+            //         content: `Hey ${user.username.toUpperCase()}, you just reste your password, this is your new one: ${newPassword}`
+            //     });
+            // }
         });
     }
 };
@@ -91,8 +91,8 @@ __decorate([
 ], UserService.prototype, "authService", void 0);
 __decorate([
     typedi_1.Inject(),
-    __metadata("design:type", messages_service_1.MessagesService)
-], UserService.prototype, "messagesService", void 0);
+    __metadata("design:type", mail_service_1.MailService)
+], UserService.prototype, "mailService", void 0);
 UserService = __decorate([
     typedi_1.Service(),
     __metadata("design:paramtypes", [])

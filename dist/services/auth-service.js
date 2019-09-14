@@ -21,10 +21,8 @@ const typedi_1 = require("typedi");
 const user_model_1 = require("../models/user-model");
 const routing_controllers_1 = require("routing-controllers");
 const secure_service_1 = require("./secure-service");
-const messages_service_1 = require("./messages-service");
 const validator_1 = require("validator");
-const organization_model_1 = require("../models/organization-model");
-// const generator = require('generate-password');
+const mail_service_1 = require("./mail-service");
 let AuthService = class AuthService {
     constructor() { }
     register(req) {
@@ -213,23 +211,23 @@ let AuthService = class AuthService {
             switch (contact.type) {
                 case 'email':
                     user = yield this.findUserByEmailOrPhone(contact.email, null);
-                    yield this.messagesService.sendEmail({
+                    yield this.mailService.send({
                         from: 'info@olivierriccini.com',
                         to: contact.email,
                         subject: 'New Password',
-                        content: `Hey ${user.username.toUpperCase()},
+                        text: `Hey ${user.username.toUpperCase()},
                               this is your new password: ${newPassword}. 
                               You can go to your profile to change it`
                     });
                     break;
                 case 'sms':
-                    user = yield this.findUserByEmailOrPhone(null, contact.phone);
-                    yield this.messagesService.sendSMS({
-                        phone: contact.phone.internationalNumber,
-                        content: `Hey ${user.username.toUpperCase()},
-                            this is your new password: ${newPassword}. 
-                            You can go to your profile to change it`
-                    });
+                    // user = await this.findUserByEmailOrPhone(null, contact.phone);
+                    // await this.mailService.sendSMS({
+                    //     phone: contact.phone.internationalNumber,
+                    //     content: `Hey ${user.username.toUpperCase()},
+                    //             this is your new password: ${newPassword}. 
+                    //             You can go to your profile to change it`
+                    // });
                     break;
                 default:
                     throw new Error('Something went wrong while reinitilizing password');
@@ -247,12 +245,8 @@ __decorate([
 ], AuthService.prototype, "userDAO", void 0);
 __decorate([
     typedi_1.Inject(),
-    __metadata("design:type", organization_model_1.OrganizationDAO)
-], AuthService.prototype, "organizationDAO", void 0);
-__decorate([
-    typedi_1.Inject(),
-    __metadata("design:type", messages_service_1.MessagesService)
-], AuthService.prototype, "messagesService", void 0);
+    __metadata("design:type", mail_service_1.MailService)
+], AuthService.prototype, "mailService", void 0);
 AuthService = __decorate([
     typedi_1.Service(),
     __metadata("design:paramtypes", [])

@@ -23,49 +23,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const debug = require('debug')('http');
 const routing_controllers_1 = require("routing-controllers");
 const typedi_1 = require("typedi");
-const messages_service_1 = require("../services/messages-service");
+const mail_service_1 = require("../services/mail-service");
+// import { MessagesService } from "../services/messages-service";
+// import { IEmail, ISMS } from "../messaging/message-interfaces";
 let MessageController = class MessageController {
     constructor() { }
     sendEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.messagesService.sendEmail(email);
+                yield this.mailService.send(email);
                 debug('POST /message/email => Email successfully sent!');
                 return 'Email successfully sent!';
             }
             catch (err) {
                 debug(err.message);
-            }
-        });
-    }
-    sendsms(sms) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.messagesService.sendSMS(sms);
-                debug('POST /message/sms => Sms successfully sent!');
-                return 'Sms successfully sent!';
-            }
-            catch (err) {
-                debug(err.message);
-            }
-        });
-    }
-    testMessage(message) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                debug('POST /messages/test => Test message sent!');
-                return `Test message working. You sent ${message.text} to ${message.to}`;
-            }
-            catch (err) {
-                debug(err.message);
+                throw new routing_controllers_1.HttpError(err);
             }
         });
     }
 };
 __decorate([
     typedi_1.Inject(),
-    __metadata("design:type", messages_service_1.MessagesService)
-], MessageController.prototype, "messagesService", void 0);
+    __metadata("design:type", mail_service_1.MailService)
+], MessageController.prototype, "mailService", void 0);
 __decorate([
     routing_controllers_1.Post('/email'),
     __param(0, routing_controllers_1.Body()),
@@ -73,20 +53,6 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], MessageController.prototype, "sendEmail", null);
-__decorate([
-    routing_controllers_1.Post('/sms'),
-    __param(0, routing_controllers_1.Body()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], MessageController.prototype, "sendsms", null);
-__decorate([
-    routing_controllers_1.Post('/test'),
-    __param(0, routing_controllers_1.Body()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], MessageController.prototype, "testMessage", null);
 MessageController = __decorate([
     routing_controllers_1.JsonController('/messages'),
     typedi_1.Service(),

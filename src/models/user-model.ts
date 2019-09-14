@@ -2,7 +2,6 @@ import * as mongoose from 'mongoose';
 import { ObjectID } from 'bson';
 import { DAOImpl } from '../persist/dao';
 import validator from 'validator';
-import { ContactMode } from './shared-interfaces';
 const debug = require('debug')('DAO');
 
 delete mongoose.connection.models['User'];
@@ -13,6 +12,11 @@ export interface IPhone {
     nationalNumber: string,
     number: string
 }
+
+export type ContactMode = 
+| 'email'
+| 'sms'
+| 'whatsApp'
 
 //Interface for model
 export interface IUser {

@@ -7,10 +7,7 @@
         "REFRESH_TOKEN_SECRET": "guyg6Wfty898xvx7!!!HXjgV",
         "ACCESS_TOKEN_EXPIRES_IN": "5000",
         "REFRESH_TOKEN_EXPIRES_IN": "10000",
-        "server": {
-            "port": 12345,
-            "host": "127.0.0.1"
-        }
+        "SMTP_AUTH_PASS": "Jsaalpefdapeccie18'10"
     },
     "development": {
         "DEBUG": "server, data-base, http, service, DAO",
@@ -20,9 +17,6 @@
         "REFRESH_TOKEN_SECRET": "skjgsc!87YhhGHH§6TFVTÈXu",
         "ACCESS_TOKEN_EXPIRES_IN": "10S",
         "REFRESH_TOKEN_EXPIRES_IN": "60S",
-        "server": {
-            "port": 12345,
-            "host": "127.0.0.1"
-        }
+        "SMTP_AUTH_PASS": "Jsaalpefdapeccie18'10"
     }
 }

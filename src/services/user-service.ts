@@ -3,14 +3,14 @@ import { IUser, UserDAO } from "../models/user-model";
 import { AuthService } from "./auth-service";
 import { HttpError } from "routing-controllers";
 import { SecureService } from "./secure-service";
-import { MessagesService } from "./messages-service";
+import { MailService } from "./mail-service";
 
 @Service()
 export class UserService {
     @Inject() private secureService: SecureService;
     @Inject() private userDAO: UserDAO;
     @Inject() private authService: AuthService;
-    @Inject() private messagesService: MessagesService;
+    @Inject() private mailService: MailService;
     
     constructor() { }
 
@@ -40,19 +40,19 @@ export class UserService {
 
     private async sendMessagesAfterRestePassword(user: IUser, newPassword: string): Promise<void> {
         if (user.email) {
-            await this.messagesService.sendEmail({
+            await this.mailService.send({
                 from: 'info@olivierriccini.com',
                 to: user.email,
                 subject: 'New Password',
-                content: `Hey ${user.username.toUpperCase()}, you just reste your password, this is your new one: ${newPassword}`
+                text: `Hey ${user.username.toUpperCase()}, you just reste your password, this is your new one: ${newPassword}`
             });
         }
-        if (user.phone && user.phone.internationalNumber) {
-            await this.messagesService.sendSMS({
-                phone: user.phone.internationalNumber,
-                content: `Hey ${user.username.toUpperCase()}, you just reste your password, this is your new one: ${newPassword}`
-            });
-        }
+        // if (user.phone && user.phone.internationalNumber) {
+        //     await this.messagesService.sendSMS({
+        //         phone: user.phone.internationalNumber,
+        //         content: `Hey ${user.username.toUpperCase()}, you just reste your password, this is your new one: ${newPassword}`
+        //     });
+        // }
     }
 
 }

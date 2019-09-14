@@ -1,9 +1,8 @@
 import { JsonController, Post, UploadedFile, Get, Param, Res, Delete, UseBefore, HttpError, Req } from 'routing-controllers';
 import { Service } from 'typedi';
-let fs = require('fs');
 import { CatalogDAO, ICatalog } from '../models/catalog-model';
 import { AdminOnly } from '../middlewares/auth-middleware';
-import { Request, Response } from "express"; 
+import { Response } from "express"; 
 
 @JsonController('/catalog')
 @Service()

@@ -2,17 +2,14 @@ import { Service, Inject } from "typedi";
 import { UserDAO, IUserCredentials, IForgotPassword, IUser, IPhone } from '../models/user-model';
 import { HttpError } from "routing-controllers";
 import { SecureService } from "./secure-service";
-import { MessagesService } from "./messages-service";
 import validator from 'validator';
-import { OrganizationDAO, IOrganization } from "../models/organization-model";
-// const generator = require('generate-password');
+import { MailService } from "./mail-service";
 
 @Service()
 export class AuthService {
     @Inject(type => SecureService) private secureService: SecureService;
     @Inject() private userDAO: UserDAO; 
-    @Inject() private organizationDAO: OrganizationDAO;
-    @Inject() private messagesService: MessagesService;
+    @Inject() private mailService: MailService;
     
     constructor() { }
 
@@ -188,23 +185,23 @@ export class AuthService {
         switch(contact.type) {
             case 'email':
                 user = await this.findUserByEmailOrPhone(contact.email, null);
-                await this.messagesService.sendEmail({
+                await this.mailService.send({
                     from: 'info@olivierriccini.com',
                     to: contact.email,
                     subject: 'New Password',
-                    content: `Hey ${user.username.toUpperCase()},
+                    text: `Hey ${user.username.toUpperCase()},
                               this is your new password: ${newPassword}. 
                               You can go to your profile to change it`
                 });
                 break;
             case 'sms':
-                user = await this.findUserByEmailOrPhone(null, contact.phone);
-                await this.messagesService.sendSMS({
-                    phone: contact.phone.internationalNumber,
-                    content: `Hey ${user.username.toUpperCase()},
-                            this is your new password: ${newPassword}. 
-                            You can go to your profile to change it`
-                });
+                // user = await this.findUserByEmailOrPhone(null, contact.phone);
+                // await this.mailService.sendSMS({
+                //     phone: contact.phone.internationalNumber,
+                //     content: `Hey ${user.username.toUpperCase()},
+                //             this is your new password: ${newPassword}. 
+                //             You can go to your profile to change it`
+                // });
                 break;
             default:
                 throw new Error('Something went wrong while reinitilizing password');

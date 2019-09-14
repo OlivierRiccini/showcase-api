@@ -5,7 +5,7 @@ import { DAOImpl } from '../persist/dao';
 let mimetypes = require('mime-types');
 let path = require('path');
 let stream = require('stream');
-var MemoryStream = require('memory-stream');
+const MemoryStream = require('memory-stream');
 
 delete mongoose.connection.models['Catalog'];
 
@@ -145,40 +145,6 @@ export class CatalogDAO extends DAOImpl<ICatalog, CatalogDocument> {
             })
             .catch((error) => reject(error));
         });
-        // try {
-        //     let bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db);
-        //     const items = await bucket.find().sort({ _id: -1 }).limit(1).toArray();
-        //     if (items.length > 0) {
-        //         let item = items[0];
-        //         let memstream = this.makeWritableStream();
-        //         const oid = mongoose.Types.ObjectId(this.stripExtension(item._id.toString()));
-        //         bucket
-        //         .openDownloadStream(oid)
-        //         .pipe(memstream)
-                // .on('error', (error) => {
-                    // reject(error);
-                    // throw new Error('Hummmm error');
-        //         })
-        //         .on('finish', () => {
-        //             let ext = path.extname(item.filename);
-    
-        //             this.result = {
-        //             id: item._id.toString() + ext,
-        //             mimeType: item.metadata.contentType,
-        //             file: { buffer: memstream.toBuffer() },
-        //             name: item.filename
-        //             };
-        //         });
-        //     } 
-        //     return this.result;
-        //     // try {
-
-        //     // } catch(err) {
-                
-        //     // }
-        // } catch(err) {
-        //     throw new Error('Mega error');
-        // }
     }
     
     public getByid(id: string): Promise<ICatalog> {

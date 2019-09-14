@@ -22,7 +22,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const typedi_1 = require("typedi");
-let fs = require('fs');
 const catalog_model_1 = require("../models/catalog-model");
 const auth_middleware_1 = require("../middlewares/auth-middleware");
 let DocumentsController = class DocumentsController {
@@ -64,23 +63,10 @@ let DocumentsController = class DocumentsController {
                 return response.status(201).send(Buffer.from(data.file.buffer));
                 // response.set('Content-Type', data.mimeType);
                 // response.end(data.file.buffer, 'UTF-8');
-                // response.charset = data.file.buffer;
-                // return response.status(201).send(data);
             })
                 .catch(err => {
                 return response.status(400).send(err);
-                // throw new HttpError(400, err);
             });
-            // try {
-            //   const data = await this.catalogDAO.get();
-            //   response.set({'Content-Type': data.mimeType});
-            //   // response.end(data.file.buffer, 'UTF-8');
-            //   // response.setEncoding('utf8');
-            //   // response.write(data.file.buffer);
-            //   response.status(201).send(Buffer.from(data.file.buffer));
-            // } catch(err) {
-            //   throw new HttpError(400, err);
-            // }
         });
     }
     deletesDocumentByItsId(id, response) {

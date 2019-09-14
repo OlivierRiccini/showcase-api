@@ -5,9 +5,6 @@ exports.CONSTANTS = {
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
     ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN,
     REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN,
-    QUEUES: {
-        EMAIL: 'https://sqs.us-east-1.amazonaws.com/039444674434/EMAIL_QUEUE',
-        SMS: 'https://sqs.us-east-1.amazonaws.com/039444674434/SMS_QUEUE'
-    }
+    SMTP_AUTH_PASS: process.env.SMTP_AUTH_PASS
 };
 //# sourceMappingURL=constants.js.map
