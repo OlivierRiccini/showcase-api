@@ -1,6 +1,5 @@
 import { JsonController, Post, UploadedFile, Get, Param, Res, Delete, UseBefore, HttpError, Req } from 'routing-controllers';
 import { Service } from 'typedi';
-// import { AuthenticatedOnly, NotInProduction, AgentOnly } from '../middlewares/authorization-middleware';
 let fs = require('fs');
 import { CatalogDAO, ICatalog } from '../models/catalog-model';
 import { AdminOnly } from '../middlewares/auth-middleware';
@@ -37,17 +36,18 @@ export class DocumentsController {
     }
   }
 
-  // @UseBefore(Auth...)
+  // @UseBefore(AdminOnly)
   @Get()
-  public async retrievesLastCatalog(@Req() request: Request, @Res() response: Response) {
-    try {
-      const data = await this.catalogDAO.get();
-      response.set('Content-Type', data.mimeType);
-      response.end(data.file.buffer, 'UTF-8');
-      response.send(data);
-    } catch(err) {
-      throw new HttpError(400, err);
-    }
+  public async retrievesLastCatalog(@Res() response: Response) {
+    response.set({'Content-Type': 'application/pdf'});
+    return this.catalogDAO.get().then(data => {
+      return response.status(201).send(Buffer.from(data.file.buffer));
+      // response.set('Content-Type', data.mimeType);
+      // response.end(data.file.buffer, 'UTF-8');
+    })
+    .catch(err => {
+      return response.status(400).send(err);
+    })
   }
 
   @UseBefore(AdminOnly)

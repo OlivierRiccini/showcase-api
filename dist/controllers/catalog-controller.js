@@ -22,7 +22,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const typedi_1 = require("typedi");
-// import { AuthenticatedOnly, NotInProduction, AgentOnly } from '../middlewares/authorization-middleware';
 let fs = require('fs');
 const catalog_model_1 = require("../models/catalog-model");
 const auth_middleware_1 = require("../middlewares/auth-middleware");
@@ -57,32 +56,31 @@ let DocumentsController = class DocumentsController {
             }
         });
     }
-    retrievesLastCatalog(request, response) {
+    // @UseBefore(AdminOnly)
+    retrievesLastCatalog(response) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const data = yield this.catalogDAO.get();
-                response.set('Content-Type', data.mimeType);
-                response.end(data.file.buffer, 'UTF-8');
-                response.send(data);
-            }
-            catch (err) {
-                throw new routing_controllers_1.HttpError(400, err);
-            }
-            // response.send(data);
-            // return this.catalogDAO
-            //   .get()
-            //   .then(data => {
-            //     if (data) {
-            //       return response.send(data);
-            //     } else {
-            //       response.status(404);
-            //       return response.send('error');
-            //       // 404 handler will take care of message content
-            //     }
-            //   })
-            //   .catch(error => {
-            //     return response.status(500).send(error.message);
-            //   });
+            response.set({ 'Content-Type': 'application/pdf' });
+            return this.catalogDAO.get().then(data => {
+                return response.status(201).send(Buffer.from(data.file.buffer));
+                // response.set('Content-Type', data.mimeType);
+                // response.end(data.file.buffer, 'UTF-8');
+                // response.charset = data.file.buffer;
+                // return response.status(201).send(data);
+            })
+                .catch(err => {
+                return response.status(400).send(err);
+                // throw new HttpError(400, err);
+            });
+            // try {
+            //   const data = await this.catalogDAO.get();
+            //   response.set({'Content-Type': data.mimeType});
+            //   // response.end(data.file.buffer, 'UTF-8');
+            //   // response.setEncoding('utf8');
+            //   // response.write(data.file.buffer);
+            //   response.status(201).send(Buffer.from(data.file.buffer));
+            // } catch(err) {
+            //   throw new HttpError(400, err);
+            // }
         });
     }
     deletesDocumentByItsId(id, response) {
@@ -107,9 +105,9 @@ __decorate([
 ], DocumentsController.prototype, "uploadsNewDocument", null);
 __decorate([
     routing_controllers_1.Get(),
-    __param(0, routing_controllers_1.Req()), __param(1, routing_controllers_1.Res()),
+    __param(0, routing_controllers_1.Res()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], DocumentsController.prototype, "retrievesLastCatalog", null);
 __decorate([
