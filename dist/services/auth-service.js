@@ -23,6 +23,7 @@ const routing_controllers_1 = require("routing-controllers");
 const secure_service_1 = require("./secure-service");
 const validator_1 = require("validator");
 const mail_service_1 = require("./mail-service");
+const constants_1 = require("../persist/constants");
 let AuthService = class AuthService {
     constructor() { }
     register(req) {
@@ -215,9 +216,15 @@ let AuthService = class AuthService {
                         from: 'info@olivierriccini.com',
                         to: contact.email,
                         subject: 'New Password',
-                        text: `Hey ${user.username.toUpperCase()},
-                              this is your new password: ${newPassword}. 
-                              You can go to your profile to change it`
+                        html: `
+                        <p>Bonjour ${user.username.toUpperCase()},
+                        Voici votre nouveau mot de pass: <strong>${newPassword}</strong></p>. 
+                        <p>Pour le modifier:</p> 
+                        <p>- allez sur la page d'authentification</p>
+                        <p>- utilisez votre adresse email et le mots de pass que nous venons de vous envoyer</p>
+                        <p>- Changer votre mot de pass</p>
+                        <a href="${constants_1.CONSTANTS.BASE_SPA_URL}/pharmacies/auth">M'authentifier</a>
+                        `
                     });
                     break;
                 case 'sms':

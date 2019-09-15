@@ -17,7 +17,6 @@ export class UserService {
     public async updateUser(user: IUser, userId: string): Promise<IUser> {
         try {
             await this.authService.emailValidation(user.email, userId);
-            await this.authService.phoneValidation(user.phone, userId);
             return await this.userDAO.update(user, userId);
         } catch (err) {
             throw new HttpError(400, err.message);

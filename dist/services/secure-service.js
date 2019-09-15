@@ -85,6 +85,7 @@ let SecureService = class SecureService {
                 username: user.username,
                 email: user.email || null,
                 phone: user.phone || null,
+                organizationName: user.organizationName || null,
                 organizationId: user.organizationId || null,
                 isAdmin: user.isAdmin || false
             };

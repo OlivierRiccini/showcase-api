@@ -24,10 +24,8 @@ class UserDAO extends dao_1.DAOImpl {
                 nationalNumber: String,
                 number: String
             },
-            organizationId: {
-                type: String,
-                require: true
-            },
+            organizationName: String,
+            organizationId: String,
             password: {
                 type: String,
                 require: true,

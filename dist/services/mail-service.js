@@ -44,7 +44,7 @@ let MailService = class MailService {
             sender: email.from,
             to: email.to,
             subject: email.subject,
-            text: email.text
+            html: email.html
         };
         return mail;
     }

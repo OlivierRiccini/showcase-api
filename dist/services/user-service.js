@@ -29,7 +29,6 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield this.authService.emailValidation(user.email, userId);
-                yield this.authService.phoneValidation(user.phone, userId);
                 return yield this.userDAO.update(user, userId);
             }
             catch (err) {
