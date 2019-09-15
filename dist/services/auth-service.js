@@ -218,7 +218,7 @@ let AuthService = class AuthService {
                         subject: 'New Password',
                         html: `
                         <p>Bonjour ${user.username.toUpperCase()},
-                        Voici votre nouveau mot de pass: <strong>${newPassword}</strong></p>. 
+                        Voici votre nouveau mot de pass: <strong>${newPassword}</strong></p>
                         <p>Pour le modifier:</p> 
                         <p>- allez sur la page d'authentification</p>
                         <p>- utilisez votre adresse email et le mots de pass que nous venons de vous envoyer</p>

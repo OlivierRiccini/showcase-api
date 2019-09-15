@@ -24,6 +24,7 @@ class UserDAO extends dao_1.DAOImpl {
                 nationalNumber: String,
                 number: String
             },
+            simplePhone: String,
             organizationName: String,
             organizationId: String,
             password: {

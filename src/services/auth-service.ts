@@ -192,11 +192,11 @@ export class AuthService {
                     subject: 'New Password',
                     html: `
                         <p>Bonjour ${user.username.toUpperCase()},
-                        Voici votre nouveau mot de pass: <strong>${newPassword}</strong></p>
+                        Voici votre nouveau mot de passe: <strong>${newPassword}</strong></p>
                         <p>Pour le modifier:</p> 
                         <p>- allez sur la page d'authentification</p>
                         <p>- utilisez votre adresse email et le mots de pass que nous venons de vous envoyer</p>
-                        <p>- Changer votre mot de pass</p>
+                        <p>- Changer votre mot de passe</p>
                         <a href="${CONSTANTS.BASE_SPA_URL}/pharmacies/auth">M'authentifier</a>
                         `
                 });

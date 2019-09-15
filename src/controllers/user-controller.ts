@@ -1,9 +1,9 @@
 const debug = require('debug')('http');
-import {JsonController, Body, Put, Param, Patch, UseBefore} from "routing-controllers";
+import {JsonController, Body, Put, Param, Patch, UseBefore, Get, Post} from "routing-controllers";
 import { IUser } from "../models/user-model";
 import { Service, Inject } from "typedi";
 import { UserService } from "../services/user-service";
-import { Authenticate } from "../middlewares/auth-middleware";
+import { Authenticate, AdminOnly } from "../middlewares/auth-middleware";
 
 @JsonController('/users')
 @Service()
@@ -11,6 +11,14 @@ export class UserController {
   @Inject() private userService: UserService;
   
   constructor() { }
+
+  @UseBefore(AdminOnly)
+  @Get()
+  async getAll() {
+    const users = await this.userService.getAll();
+    debug('POST /users/update-password => Successfully updated!');
+    return users;
+  }
 
   @UseBefore(Authenticate)
   @Put('/:id/update')
@@ -26,6 +34,14 @@ export class UserController {
     await this.userService.handleChangePassword(id, passwords.oldPassword, passwords.newPassword);
     debug('POST /users/update-password => Successfully updated!');
     return 'Password successfully updated!';
+  }
+
+  @UseBefore(AdminOnly)
+  @Post('/create')
+  async createUser(@Body() user: IUser) {
+    const newUser = await this.userService.generateNewUser(user);
+    debug('POST /users/create => Successfully created!');
+    return newUser;
   }
  
 }

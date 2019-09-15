@@ -27,6 +27,13 @@ const user_service_1 = require("../services/user-service");
 const auth_middleware_1 = require("../middlewares/auth-middleware");
 let UserController = class UserController {
     constructor() { }
+    getAll() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const users = yield this.userService.getAll();
+            debug('POST /users/update-password => Successfully updated!');
+            return users;
+        });
+    }
     updateUser(id, user) {
         return __awaiter(this, void 0, void 0, function* () {
             const updatedUser = yield this.userService.updateUser(user, id);
@@ -41,11 +48,25 @@ let UserController = class UserController {
             return 'Password successfully updated!';
         });
     }
+    createUser(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const newUser = yield this.userService.generateNewUser(user);
+            debug('POST /users/create => Successfully created!');
+            return newUser;
+        });
+    }
 };
 __decorate([
     typedi_1.Inject(),
     __metadata("design:type", user_service_1.UserService)
 ], UserController.prototype, "userService", void 0);
+__decorate([
+    routing_controllers_1.UseBefore(auth_middleware_1.AdminOnly),
+    routing_controllers_1.Get(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getAll", null);
 __decorate([
     routing_controllers_1.UseBefore(auth_middleware_1.Authenticate),
     routing_controllers_1.Put('/:id/update'),
@@ -62,6 +83,14 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateUserPassord", null);
+__decorate([
+    routing_controllers_1.UseBefore(auth_middleware_1.AdminOnly),
+    routing_controllers_1.Post('/create'),
+    __param(0, routing_controllers_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "createUser", null);
 UserController = __decorate([
     routing_controllers_1.JsonController('/users'),
     typedi_1.Service(),

@@ -25,6 +25,7 @@ export interface IUser {
     username?: string,
     email?: string,
     phone?: IPhone,
+    simplePhone?: string,
     password: string,
     organizationName: string,
     organizationId?: string,
@@ -79,6 +80,7 @@ export class UserDAO extends DAOImpl<IUser, UserDocument> {
                 nationalNumber: String,
                 number: String
             },
+            simplePhone: String,
             organizationName: String,
             organizationId: String,
             password: {

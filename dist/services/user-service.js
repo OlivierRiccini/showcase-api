@@ -23,6 +23,7 @@ const auth_service_1 = require("./auth-service");
 const routing_controllers_1 = require("routing-controllers");
 const secure_service_1 = require("./secure-service");
 const mail_service_1 = require("./mail-service");
+const constants_1 = require("../persist/constants");
 let UserService = class UserService {
     constructor() { }
     updateUser(user, userId) {
@@ -57,22 +58,69 @@ let UserService = class UserService {
         });
     }
     ;
+    getAll() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const users = yield this.userDAO.getAll();
+                if (!users) {
+                    throw new Error('Something went wrong while retrieving all users');
+                }
+                return users;
+            }
+            catch (err) {
+                throw new routing_controllers_1.HttpError(404, err.message);
+            }
+        });
+    }
+    generateNewUser(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const generatedPassword = yield this.secureService.generateNewPassword();
+                user.password = generatedPassword;
+                user = yield this.userDAO.create(user);
+                yield this.mailService.send({
+                    to: user.email,
+                    subject: 'Bienvenue chez Balagne Medical Service',
+                    html: `
+                <p>Bonjour ${user.username.toUpperCase()},
+                nous venons de vous donnez accès à notre site internet.</p>
+                <p>Vous pouvez maintenant vous connecter à votre espace avec les
+                identifiants suivants:</p>
+                <p>Adresse email: </p><strong>${user.email}</strong>
+                <p>Mot de passe: </p><strong>${generatedPassword}</strong>
+                <br>
+                <p>Vous pouvez vous y rendre immediatement en cliquant sur lien suivant:</p>
+                <a href="${constants_1.CONSTANTS.BASE_SPA_URL}/pharmacies/auth">M'authentifier</a>
+                <br>
+                <p>Une fois connecté, vous pourrez modifier votre mot de passe et vos informations</p>
+                <br>
+                <p>Si vous avez des questions, n'hésitez pas à nous contacter</p>
+                <p>Merci et à bientôt chez Balagne Medical Service</p>
+                `
+                });
+                return user;
+            }
+            catch (err) {
+                throw new routing_controllers_1.HttpError(404, err.message);
+            }
+        });
+    }
     sendMessagesAfterRestePassword(user, newPassword) {
         return __awaiter(this, void 0, void 0, function* () {
             if (user.email) {
                 yield this.mailService.send({
-                    from: 'info@olivierriccini.com',
                     to: user.email,
-                    subject: 'New Password',
-                    text: `Hey ${user.username.toUpperCase()}, you just reste your password, this is your new one: ${newPassword}`
+                    subject: 'Nouveau mot de passe',
+                    html: `
+                <p>Bonjour ${user.username.toUpperCase()},
+                vous venez de changer votre mot de passe.</p>
+                <br>
+                <span>Nouveau mot de passe: </span><strong>${newPassword}</strong>
+                <br>
+                <a href="${constants_1.CONSTANTS.BASE_SPA_URL}/pharmacies/auth">M'authentifier</a>
+                `
                 });
             }
-            // if (user.phone && user.phone.internationalNumber) {
-            //     await this.messagesService.sendSMS({
-            //         phone: user.phone.internationalNumber,
-            //         content: `Hey ${user.username.toUpperCase()}, you just reste your password, this is your new one: ${newPassword}`
-            //     });
-            // }
         });
     }
 };
