@@ -89,7 +89,6 @@ export class UserService {
                 html: `
                 <p>Bonjour ${user.username.toUpperCase()},
                 vous venez de changer votre mot de passe.</p>
-                <br>
                 <span>Nouveau mot de passe: </span><strong>${newPassword}</strong>
                 <br>
                 <a href="${CONSTANTS.BASE_SPA_URL}/pharmacies/auth">M'authentifier</a>
