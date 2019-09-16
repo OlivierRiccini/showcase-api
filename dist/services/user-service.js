@@ -83,17 +83,17 @@ let UserService = class UserService {
                     subject: 'Bienvenue chez Balagne Medical Service',
                     html: `
                 <p>Bonjour ${user.username.toUpperCase()},
-                nous venons de vous donnez accès à notre site internet.</p>
+                nous venons de vous donner accès à notre site internet.</p>
                 <p>Vous pouvez maintenant vous connecter à votre espace avec les
                 identifiants suivants:</p>
-                <p>Adresse email: </p><strong>${user.email}</strong>
-                <p>Mot de passe: </p><strong>${generatedPassword}</strong>
+                <span>Adresse email: </span><strong>${user.email}</strong>
+                <br>
+                <span>Mot de passe: </span><strong>${generatedPassword}</strong>
                 <br>
                 <p>Vous pouvez vous y rendre immediatement en cliquant sur lien suivant:</p>
                 <a href="${constants_1.CONSTANTS.BASE_SPA_URL}/pharmacies/auth">M'authentifier</a>
                 <br>
                 <p>Une fois connecté, vous pourrez modifier votre mot de passe et vos informations</p>
-                <br>
                 <p>Si vous avez des questions, n'hésitez pas à nous contacter</p>
                 <p>Merci et à bientôt chez Balagne Medical Service</p>
                 `
@@ -114,7 +114,6 @@ let UserService = class UserService {
                     html: `
                 <p>Bonjour ${user.username.toUpperCase()},
                 vous venez de changer votre mot de passe.</p>
-                <br>
                 <span>Nouveau mot de passe: </span><strong>${newPassword}</strong>
                 <br>
                 <a href="${constants_1.CONSTANTS.BASE_SPA_URL}/pharmacies/auth">M'authentifier</a>
