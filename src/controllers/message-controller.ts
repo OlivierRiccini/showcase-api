@@ -25,25 +25,14 @@ export class MessageController {
     }
   }
 
-  // @Post('/sms')
-  // async sendsms(@Body() sms: ISMS): Promise<string> {
-  //   try {
-  //       await this.messagesService.sendSMS(sms);
-  //       debug('POST /message/sms => Sms successfully sent!');
-  //       return 'Sms successfully sent!';
-  //   } catch(err) {
-  //       debug(err.message)
-  //   }
-  // }
-
-  // @Post('/test')
-  // async testMessage(@Body() message: { to: string; text: string }): Promise<string> {
-  //   try {
-  //       debug('POST /messages/test => Test message sent!');
-  //       return  `Test message working. You sent ${message.text} to ${message.to}`;
-  //   } catch(err) {
-  //       debug(err.message)
-  //   }
-  // }
+  @Post('/test')
+  async testMessage(@Body() message: { to: string; text: string }): Promise<string> {
+    try {
+        debug('POST /messages/test => Test message sent!');
+        return  `Test message working. You sent ${message.text} to ${message.to}`;
+    } catch(err) {
+        debug(err.message)
+    }
+  }
  
 }
