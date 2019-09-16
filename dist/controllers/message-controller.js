@@ -41,6 +41,17 @@ let MessageController = class MessageController {
             }
         });
     }
+    testMessage(message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                debug('POST /messages/test => Test message sent!');
+                return `Test message working. You sent ${message.text} to ${message.to}`;
+            }
+            catch (err) {
+                debug(err.message);
+            }
+        });
+    }
 };
 __decorate([
     typedi_1.Inject(),
@@ -53,6 +64,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], MessageController.prototype, "sendEmail", null);
+__decorate([
+    routing_controllers_1.Post('/test'),
+    __param(0, routing_controllers_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], MessageController.prototype, "testMessage", null);
 MessageController = __decorate([
     routing_controllers_1.JsonController('/messages'),
     typedi_1.Service(),
