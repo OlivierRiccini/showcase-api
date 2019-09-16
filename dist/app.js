@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-require('./config/config.js');
 const debug = require('debug')('server');
 require("reflect-metadata"); // this shim is required
 const routing_controllers_1 = require("routing-controllers");

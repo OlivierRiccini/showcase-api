@@ -1,5 +1,3 @@
-require('./config/config.js')
-
 const debug = require('debug')('server');
 
 import "reflect-metadata"; // this shim is required
