@@ -12,7 +12,8 @@
     "postinstall": "npm run build"
   },
   "engines": {
-    "node": "10.14.2"
+    "node": "10.14.2",
+    "npm": "3.10.10"
   },
   "keywords": [],
   "author": "",
