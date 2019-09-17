@@ -6,7 +6,9 @@ import { MongooseConnection } from './db/mongoose-connection';
 import { Container } from "typedi";
 
 useContainer(Container);
- 
+
+const PORT = process.env.PORT || 3000;
+
 const app = createExpressServer({
   cors: true,
   controllers: [__dirname + "/controllers/**/*.js"],
@@ -16,10 +18,10 @@ const app = createExpressServer({
 const mongooseConnection = new MongooseConnection();
 mongooseConnection.init();
 
-app.set("port", process.env.PORT);
+app.set('port', PORT);
 
-app.listen(app.get("port"), () => {
-  debug(`Server running on port ${app.get("port")}`);
+app.listen(app.get('port'), () => {
+  debug(`Server running on port ${PORT}`);
 });
 
 module.exports.app = app;
