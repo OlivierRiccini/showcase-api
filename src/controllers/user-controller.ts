@@ -1,5 +1,5 @@
 const debug = require('debug')('http');
-import {JsonController, Body, Put, Param, Patch, UseBefore, Get, Post} from "routing-controllers";
+import {JsonController, Body, Put, Param, Patch, UseBefore, Get, Post, Delete} from "routing-controllers";
 import { IUser } from "../models/user-model";
 import { Service, Inject } from "typedi";
 import { UserService } from "../services/user-service";
@@ -32,16 +32,24 @@ export class UserController {
   @Patch('/:id/update-password')
   async updateUserPassord(@Param('id') id: string, @Body() passwords: { oldPassword: string, newPassword: string }) {
     await this.userService.handleChangePassword(id, passwords.oldPassword, passwords.newPassword);
-    debug('POST /users/update-password => Successfully updated!');
+    debug('PATCH /users/update-password => Successfully updated!');
     return 'Password successfully updated!';
   }
 
-  // @UseBefore(AdminOnly)
+  @UseBefore(AdminOnly)
   @Post('/create')
   async createUser(@Body() user: IUser) {
     const newUser = await this.userService.generateNewUser(user);
     debug('POST /users/create => Successfully created!');
     return newUser;
+  }
+
+  @UseBefore(AdminOnly)
+  @Delete('/:id')
+  async deleteUser(@Param('id') id: string) {
+    await this.userService.delete(id);
+    debug('DELETE /users => Successfully deleted!');
+    return 'Successfully deleted!';
   }
  
 }

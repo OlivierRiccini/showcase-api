@@ -53,7 +53,7 @@ export class UserService {
     public async generateNewUser(user: IUser): Promise<IUser> {
         try {
             const generatedPassword = await this.secureService.generateNewPassword();
-            user.password = generatedPassword;
+            user.password = await this.secureService.hashPassword(generatedPassword);
             user = await this.userDAO.create(user);
             await this.mailService.send({
                 to: user.email,
@@ -76,6 +76,14 @@ export class UserService {
                 `
             });
             return user;
+        } catch(err) {
+            throw new HttpError(404, err.message);
+        }
+    }
+
+    public async delete(userId: string): Promise<void> {
+        try {
+            return await this.userDAO.delete(userId);
         } catch(err) {
             throw new HttpError(404, err.message);
         }

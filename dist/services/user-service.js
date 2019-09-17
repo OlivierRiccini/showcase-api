@@ -76,7 +76,8 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const generatedPassword = yield this.secureService.generateNewPassword();
-                user.password = generatedPassword;
+                // user.password = generatedPassword;
+                user.password = yield this.secureService.hashPassword(generatedPassword);
                 user = yield this.userDAO.create(user);
                 yield this.mailService.send({
                     to: user.email,
