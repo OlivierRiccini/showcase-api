@@ -9,7 +9,7 @@
     "start": "node dist/app.js",
     "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && npm run build && nyc mocha",
     "start-local-mongo": "~/./mongo/bin/mongod --dbpath /Users/olivierriccini/mongo/bin",
-    "postinstall": "npm install && npm run build"
+    "postinstall": "npm run build"
   },
   "engines": {
     "node": "10.14.2"
