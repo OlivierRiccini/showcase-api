@@ -5,6 +5,8 @@ require("reflect-metadata"); // this shim is required
 const routing_controllers_1 = require("routing-controllers");
 const mongoose_connection_1 = require("./db/mongoose-connection");
 const typedi_1 = require("typedi");
+const envFile = process.env.NODE_ENV ? `./config/${process.env.NODE_ENV}.env` : '.env';
+require('dotenv').config({ path: envFile });
 routing_controllers_1.useContainer(typedi_1.Container);
 const PORT = process.env.PORT || 3000;
 const app = routing_controllers_1.createExpressServer({

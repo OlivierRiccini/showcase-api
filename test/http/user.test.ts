@@ -25,8 +25,7 @@ chai.use(chaiHttp);
 chai.use(chaiAsPromised)
 chai.should();
 
-describe('HTTP - TESTING USER ROUTES ./http/user.test', function() {
-
+describe.only('HTTP - TESTING USER ROUTES ./http/user.test', function() {
   const request = chai.request(app).keepOpen();
 
   let VALID_USER: IUser = {

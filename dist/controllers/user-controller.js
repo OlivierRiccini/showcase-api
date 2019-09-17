@@ -48,6 +48,7 @@ let UserController = class UserController {
             return 'Password successfully updated!';
         });
     }
+    // @UseBefore(AdminOnly)
     createUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
             const newUser = yield this.userService.generateNewUser(user);
@@ -84,7 +85,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateUserPassord", null);
 __decorate([
-    routing_controllers_1.UseBefore(auth_middleware_1.AdminOnly),
     routing_controllers_1.Post('/create'),
     __param(0, routing_controllers_1.Body()),
     __metadata("design:type", Function),

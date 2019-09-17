@@ -5,6 +5,9 @@ import {createExpressServer, useContainer} from "routing-controllers";
 import { MongooseConnection } from './db/mongoose-connection';
 import { Container } from "typedi";
 
+const envFile = process.env.NODE_ENV ? `./config/${process.env.NODE_ENV}.env` : '.env';
+require('dotenv').config({ path: envFile });
+
 useContainer(Container);
 
 const PORT = process.env.PORT || 3000;

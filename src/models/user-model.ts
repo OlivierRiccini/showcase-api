@@ -27,7 +27,7 @@ export interface IUser {
     phone?: IPhone,
     simplePhone?: string,
     password: string,
-    organizationName: string,
+    organizationName?: string,
     organizationId?: string,
     isAdmin?: boolean
 }

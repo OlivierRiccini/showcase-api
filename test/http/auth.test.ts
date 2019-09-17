@@ -22,7 +22,7 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 chai.should();
 
-describe('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
+describe.only('HTTP - TESTING AUTH ROUTES ./http/auth.test', function() {
   this.timeout(15000);
 
   const request = chai.request(app).keepOpen();

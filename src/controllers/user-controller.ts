@@ -36,7 +36,7 @@ export class UserController {
     return 'Password successfully updated!';
   }
 
-  @UseBefore(AdminOnly)
+  // @UseBefore(AdminOnly)
   @Post('/create')
   async createUser(@Body() user: IUser) {
     const newUser = await this.userService.generateNewUser(user);
