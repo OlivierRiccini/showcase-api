@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
 import * as mongoose from 'mongoose';
+import { ObjectID } from 'bson';
 import { DAOImpl } from '../persist/dao';
 let mimetypes = require('mime-types');
 let path = require('path');
 let stream = require('stream');
 const MemoryStream = require('memory-stream');
-import { ObjectID } from 'bson';
 
 delete mongoose.connection.models['Catalog'];
 
@@ -112,9 +112,7 @@ export class CatalogDAO extends DAOImpl<ICatalog, CatalogDocument> {
     }
 
     public async get(): Promise<ICatalog> {
-        console.log('////////////////////////////// 1 ////////////////////////////////////');
         return new Promise<any>((resolve, reject) => {
-        console.log('////////////////////////////// 2 ////////////////////////////////////');
         const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db);
         bucket
             .find()
@@ -122,27 +120,17 @@ export class CatalogDAO extends DAOImpl<ICatalog, CatalogDocument> {
             .limit(1)
             .toArray()
             .then((items: any[]) => {
-                console.log('////////////////////////////// 3 ////////////////////////////////////');
                 if (items.length > 0) {
-                    console.log('////////////////////////////// 4 ////////////////////////////////////');
                     const item = items[0];
-                    console.log(items);
                     const memstream = this.makeWritableStream();
-                    console.log('////////////////////////////// 5 ////////////////////////////////////');
-                    // const oid = mongoose.Types.ObjectId(this.stripExtension(item._id.toString()));
-                    const oid = new ObjectID(this.stripExtension(item._id.toString()));
-                    console.log(typeof oid);
-                    console.log(oid);
-                    console.log('////////////////////////////// 6 ////////////////////////////////////');
+                    const oid = mongoose.Types.ObjectId(this.stripExtension(item._id.toString()));
                     bucket
                     .openDownloadStream(oid)
                     .pipe(memstream)
                     .on('error', (error) => {
-                        console.log('////////////////////////////// 7 ////////////////////////////////////');
                         reject(error);
                     })
                     .on('finish', () => {
-                        console.log('////////////////////////////// 8 ////////////////////////////////////');
                         let ext = path.extname(item.filename);
         
                         let result = {
@@ -151,21 +139,11 @@ export class CatalogDAO extends DAOImpl<ICatalog, CatalogDocument> {
                         file: { buffer: memstream.toBuffer() },
                         name: item.filename
                         };
-                        console.log('////////////////////////////// 9 ////////////////////////////////////');
                         resolve(result);
                     });
-                    resolve();
-                    console.log('////////////////////////////// 10 ////////////////////////////////////');
-                } else {
-                    reject('Not Found');
-                }
-                console.log('////////////////////////////// 12 ////////////////////////////////////');
-                resolve();
+                } 
             })
-            .catch((error) => {
-                console.log('////////////////////////////// 12 ////////////////////////////////////');
-                reject(error)
-            });
+            .catch((error) => reject(error));
         });
     }
     

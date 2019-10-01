@@ -39,19 +39,12 @@ export class DocumentsController {
   @Get()
   public async retrievesLastCatalog(@Res() response: Response) {
     response.set({'Content-Type': 'application/pdf'});
-    console.log('////////////////////////////// 20 ////////////////////////////////////');
     return this.catalogDAO.get().then(data => {
-      console.log(data);
-      if (!data || data === undefined) {
-        return response.status(400).send('Not found');
-      }
-      console.log('////////////////////////////// 21 ////////////////////////////////////');
       return response.status(201).send(Buffer.from(data.file.buffer));
       // response.set('Content-Type', data.mimeType);
       // response.end(data.file.buffer, 'UTF-8');
     })
     .catch(err => {
-      console.log('////////////////////////////// 22 ////////////////////////////////////');
       return response.status(400).send(err);
     })
   }
