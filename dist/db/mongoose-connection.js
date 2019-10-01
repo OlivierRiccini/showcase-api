@@ -10,7 +10,12 @@ class MongooseConnection {
         mongoose.Promise = global.Promise;
         const operation = retry.operation({ retries: 50 });
         operation.attempt(() => {
-            mongoose.connect(this.mongoDBUri, { useNewUrlParser: true })
+            mongoose.connect(this.mongoDBUri, {
+                useNewUrlParser: true,
+                socketTimeoutMS: 60000,
+                keepAlive: true,
+                connectTimeoutMS: 60000
+            })
                 .then(() => debug(`Successfully connected DB: ${this.mongoDBUri}`))
                 .catch((err) => {
                 debug(err);

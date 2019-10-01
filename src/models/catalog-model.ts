@@ -90,7 +90,6 @@ export class CatalogDAO extends DAOImpl<ICatalog, CatalogDocument> {
         };
     
         const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db);
-
         // Drop DB to keep just one catalog stored in it
         bucket.drop();
     

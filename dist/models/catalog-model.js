@@ -115,9 +115,6 @@ class CatalogDAO extends dao_1.DAOImpl {
                             resolve(result);
                         });
                     }
-                    else {
-                        reject('Not Found');
-                    }
                 })
                     .catch((error) => reject(error));
             });
