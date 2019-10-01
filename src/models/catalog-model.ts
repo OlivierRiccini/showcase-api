@@ -126,9 +126,11 @@ export class CatalogDAO extends DAOImpl<ICatalog, CatalogDocument> {
                 if (items.length > 0) {
                     console.log('////////////////////////////// 4 ////////////////////////////////////');
                     const item = items[0];
+                    console.log(items);
                     const memstream = this.makeWritableStream();
                     console.log('////////////////////////////// 5 ////////////////////////////////////');
                     const oid = mongoose.Types.ObjectId(this.stripExtension(item._id.toString()));
+                    console.log(oid);
                     console.log('////////////////////////////// 6 ////////////////////////////////////');
                     bucket
                     .openDownloadStream(oid)
