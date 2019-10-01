@@ -112,7 +112,9 @@ export class CatalogDAO extends DAOImpl<ICatalog, CatalogDocument> {
     }
 
     public async get(): Promise<ICatalog> {
+        console.log('////////////////////////////// 1 ////////////////////////////////////');
         return new Promise<any>((resolve, reject) => {
+        console.log('////////////////////////////// 2 ////////////////////////////////////');
         const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db);
         bucket
             .find()
@@ -120,17 +122,23 @@ export class CatalogDAO extends DAOImpl<ICatalog, CatalogDocument> {
             .limit(1)
             .toArray()
             .then((items: any[]) => {
+                console.log('////////////////////////////// 3 ////////////////////////////////////');
                 if (items.length > 0) {
+                    console.log('////////////////////////////// 4 ////////////////////////////////////');
                     const item = items[0];
                     const memstream = this.makeWritableStream();
+                    console.log('////////////////////////////// 5 ////////////////////////////////////');
                     const oid = mongoose.Types.ObjectId(this.stripExtension(item._id.toString()));
+                    console.log('////////////////////////////// 6 ////////////////////////////////////');
                     bucket
                     .openDownloadStream(oid)
                     .pipe(memstream)
                     .on('error', (error) => {
+                        console.log('////////////////////////////// 7 ////////////////////////////////////');
                         reject(error);
                     })
                     .on('finish', () => {
+                        console.log('////////////////////////////// 8 ////////////////////////////////////');
                         let ext = path.extname(item.filename);
         
                         let result = {
@@ -139,13 +147,19 @@ export class CatalogDAO extends DAOImpl<ICatalog, CatalogDocument> {
                         file: { buffer: memstream.toBuffer() },
                         name: item.filename
                         };
+                        console.log('////////////////////////////// 9 ////////////////////////////////////');
                         resolve(result);
                     });
+                    console.log('////////////////////////////// 10 ////////////////////////////////////');
                 } else {
+                    console.log('////////////////////////////// 11 ////////////////////////////////////');
                     reject('Not Found');
                 }
             })
-            .catch((error) => reject(error));
+            .catch((error) => {
+                console.log('////////////////////////////// 12 ////////////////////////////////////');
+                reject(error)
+            });
         });
     }
     
