@@ -155,6 +155,8 @@ export class CatalogDAO extends DAOImpl<ICatalog, CatalogDocument> {
                     console.log('////////////////////////////// 11 ////////////////////////////////////');
                     reject('Not Found');
                 }
+                console.log('////////////////////////////// 12 ////////////////////////////////////');
+                resolve();
             })
             .catch((error) => {
                 console.log('////////////////////////////// 12 ////////////////////////////////////');
