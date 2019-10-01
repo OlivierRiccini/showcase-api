@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
 import * as mongoose from 'mongoose';
-import { ObjectID } from 'bson';
 import { DAOImpl } from '../persist/dao';
 let mimetypes = require('mime-types');
 let path = require('path');
 let stream = require('stream');
 const MemoryStream = require('memory-stream');
+import { ObjectID } from 'bson';
 
 delete mongoose.connection.models['Catalog'];
 
@@ -129,8 +129,10 @@ export class CatalogDAO extends DAOImpl<ICatalog, CatalogDocument> {
                     console.log(items);
                     const memstream = this.makeWritableStream();
                     console.log('////////////////////////////// 5 ////////////////////////////////////');
-                    const oid = mongoose.Types.ObjectId(this.stripExtension(item._id.toString()));
+                    // const oid = mongoose.Types.ObjectId(this.stripExtension(item._id.toString()));
+                    const oid = new ObjectID(this.stripExtension(item._id.toString()));
                     console.log(typeof oid);
+                    console.log(oid);
                     console.log('////////////////////////////// 6 ////////////////////////////////////');
                     bucket
                     .openDownloadStream(oid)
