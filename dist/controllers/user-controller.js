@@ -44,16 +44,22 @@ let UserController = class UserController {
     updateUserPassord(id, passwords) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.userService.handleChangePassword(id, passwords.oldPassword, passwords.newPassword);
-            debug('POST /users/update-password => Successfully updated!');
+            debug('PATCH /users/update-password => Successfully updated!');
             return 'Password successfully updated!';
         });
     }
-    // @UseBefore(AdminOnly)
     createUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
             const newUser = yield this.userService.generateNewUser(user);
             debug('POST /users/create => Successfully created!');
             return newUser;
+        });
+    }
+    deleteUser(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.userService.delete(id);
+            debug('DELETE /users => Successfully deleted!');
+            return 'Successfully deleted!';
         });
     }
 };
@@ -85,12 +91,21 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateUserPassord", null);
 __decorate([
+    routing_controllers_1.UseBefore(auth_middleware_1.AdminOnly),
     routing_controllers_1.Post('/create'),
     __param(0, routing_controllers_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "createUser", null);
+__decorate([
+    routing_controllers_1.UseBefore(auth_middleware_1.AdminOnly),
+    routing_controllers_1.Delete('/:id'),
+    __param(0, routing_controllers_1.Param('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "deleteUser", null);
 UserController = __decorate([
     routing_controllers_1.JsonController('/users'),
     typedi_1.Service(),

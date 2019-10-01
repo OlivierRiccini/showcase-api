@@ -76,7 +76,6 @@ let UserService = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const generatedPassword = yield this.secureService.generateNewPassword();
-                // user.password = generatedPassword;
                 user.password = yield this.secureService.hashPassword(generatedPassword);
                 user = yield this.userDAO.create(user);
                 yield this.mailService.send({
@@ -100,6 +99,16 @@ let UserService = class UserService {
                 `
                 });
                 return user;
+            }
+            catch (err) {
+                throw new routing_controllers_1.HttpError(404, err.message);
+            }
+        });
+    }
+    delete(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield this.userDAO.delete(userId);
             }
             catch (err) {
                 throw new routing_controllers_1.HttpError(404, err.message);

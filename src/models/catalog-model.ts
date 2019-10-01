@@ -141,7 +141,9 @@ export class CatalogDAO extends DAOImpl<ICatalog, CatalogDocument> {
                         };
                         resolve(result);
                     });
-                } 
+                } else {
+                    reject('Not Found');
+                }
             })
             .catch((error) => reject(error));
         });
