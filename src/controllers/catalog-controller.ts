@@ -41,6 +41,7 @@ export class DocumentsController {
     response.set({'Content-Type': 'application/pdf'});
     console.log('////////////////////////////// 20 ////////////////////////////////////');
     return this.catalogDAO.get().then(data => {
+      console.log(data);
       console.log('////////////////////////////// 21 ////////////////////////////////////');
       return response.status(201).send(Buffer.from(data.file.buffer));
       // response.set('Content-Type', data.mimeType);
