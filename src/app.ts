@@ -23,6 +23,8 @@ mongooseConnection.init();
 
 app.set('port', PORT);
 
+process.on('uncaughtException', (err) => console.log('uncaughtException= ', err));
+
 app.listen(app.get('port'), () => {
   debug(`Server running on port ${PORT}`);
 });

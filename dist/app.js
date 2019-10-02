@@ -17,6 +17,7 @@ const app = routing_controllers_1.createExpressServer({
 const mongooseConnection = new mongoose_connection_1.MongooseConnection();
 mongooseConnection.init();
 app.set('port', PORT);
+process.on('uncaughtException', (err) => console.log('uncaughtException= ', err));
 app.listen(app.get('port'), () => {
     debug(`Server running on port ${PORT}`);
 });
